@@ -24,7 +24,7 @@ end
 
 -- > ( global cheat variables )
 
-local file_path = getgenv().custom_folder or "juju recode"
+local file_path = getgenv().custom_folder or "appleware"
 local user_input_service = cloneref(game:GetService("UserInputService"))
 local get_mouse_location = user_input_service["GetMouseLocation"]
 local players_service = cloneref(game:GetService("Players"))
@@ -73,7 +73,8 @@ local connections = {}
 local addon_data = {}
 local heartbeat = {}
 local flags = {
-	["keybinds_position"] = { 15, camera["ViewportSize"]["Y"] / 2 - 10 },
+	["keybinds_position"]  = { 15, camera["ViewportSize"]["Y"] / 2 - 10 },
+	["watermark_position"] = { camera["ViewportSize"]["X"] / 2 - 50, 12 },
 	["loaded_addons"] = {},
 	["favorites"] = {},
 }
@@ -281,24 +282,24 @@ local menu = {
 	on_config_loaded = signal["new"](),
 	accent = color3_fromrgb(103, 53, 53),
 	colors = {
-		["shadow"]        = color3_fromrgb(103, 53, 53),
-		["accent"]        = color3_fromrgb(103, 53, 53),
+		["shadow"]        = color3_fromrgb(209, 23, 23),
+		["accent"]        = color3_fromrgb(209, 23, 23),
 		["active_text"]   = color3_fromrgb(220, 220, 220),
 		["keybind_text"]  = color3_fromrgb(185, 185, 185),
-		["border"]        = color3_fromrgb(42, 42, 43),
+		["border"]        = color3_fromrgb(8, 8, 8),
 		["inactive_text"] = color3_fromrgb(100, 100, 100),
 		["highlighted"]   = color3_fromrgb(30, 20, 20),
-		["dark_text"]     = color3_fromrgb(140, 130, 130),
-		["image"]         = color3_fromrgb(130, 100, 100),
-		["section"]       = color3_fromrgb(19, 19, 19),
-		["background"]    = color3_fromrgb(21, 21, 21),
-		["success"]       = color3_fromrgb(103, 53, 53),
-		["error"]         = color3_fromrgb(78, 30, 30),
+		["dark_text"]     = color3_fromrgb(146, 146, 146),
+		["image"]         = color3_fromrgb(192, 192, 192),
+		["section"]       = color3_fromrgb(8, 8, 8),
+		["background"]    = color3_fromrgb(5, 5, 5),
+		["success"]       = color3_fromrgb(138, 253, 128),
+		["error"]         = color3_fromrgb(155, 45, 45),
 		["alert"]         = color3_fromrgb(60, 30, 20),
-		["logo"]          = color3_fromrgb(103, 53, 53),
-		["juju"]          = color3_fromrgb(103, 53, 53),
-		["build"]         = color3_fromrgb(103, 53, 53),
-		["cursor"]        = color3_fromrgb(103, 53, 53),
+		["logo"]          = color3_fromrgb(255, 255, 255),
+		["juju"]          = color3_fromrgb(165, 43, 43),
+		["build"]         = color3_fromrgb(165, 43, 43),
+		["cursor"]        = color3_fromrgb(128, 128, 128),
 	},
 	settings = {},
 	notifications = {},
@@ -355,7 +356,7 @@ do
 				["jaydes.png"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/jaydes.png"),
 				["1.png"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/1.png"),
 				["2.png"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/2.png"),
-				["logo.png"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/logo.png"),
+				["logo.png"] = safeHttp("https://raw.githubusercontent.com/emptyusesdx9/appleware/main/utility/logo.png"),
 				["saturation.png"] = safeHttp(
 					"https://raw.githubusercontent.com/panduh16/juju/main/assets/saturation.png"
 				),
@@ -389,7 +390,7 @@ do
 				["spam.json"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/spam.json"),
 			},
 			["themes"] = {
-				["default.th"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/default.th"),
+				["theme.th"] = safeHttp("https://raw.githubusercontent.com/emptyusesdx9/appleware/refs/heads/main/utility/themes/default.th"),
 			},
 			["addons"] = {},
 			["configs"] = {},
@@ -784,6 +785,117 @@ do
 		["Visible"] = true,
 		["Transparency"] = 1,
 	})
+
+	-- > ( watermark )
+
+	local wm_line = nil
+
+	do
+		local viewport   = camera["ViewportSize"]
+		local wm_default = (getgenv().script_name or "juju")
+			.. " " .. (getgenv().script_version or "live")
+			.. "  ·  " .. local_player["Name"]
+			.. "  ·  " .. os.date("%a, %b %d %Y")
+
+		local wm_init_x = flags["watermark_position"][1]
+		local wm_init_y = flags["watermark_position"][2]
+
+		-- outer border (same role as list_frame)
+		local wm_frame = drawing_proxy["new"]("Image", {
+			["Position"]     = udim2_new(0, wm_init_x, 0, wm_init_y),
+			["Size"]         = udim2_new(0, 74, 0, 20),
+			["Color"]        = menu["colors"]["border"],
+			["Transparency"] = 0,
+			["Rounding"]     = 4,
+			["Data"]         = pixel_image_data,
+			["ZIndex"]       = 10,
+			["Visible"]      = true,
+		})
+
+		hud_frames["watermark_position"] = wm_frame
+
+		-- shadow (same role as list_shadow)
+		local wm_shadow = drawing_proxy["new"]("Image", {
+			["Parent"]       = wm_frame,
+			["Data"]         = shadow_image_data,
+			["Rounding"]     = 7,
+			["Color"]        = menu["colors"]["shadow"],
+			["Transparency"] = 0.16,
+			["Size"]         = udim2_new(1, 6, 1, 4),
+			["ZIndex"]       = 9,
+			["Visible"]      = true,
+			["Position"]     = udim2_new(0, -3, 0, -2),
+		})
+
+		-- dark inner frame (same role as list_inside)
+		local wm_inside = drawing_proxy["new"]("Image", {
+			["Position"]     = udim2_new(0, 1, 0, 1),
+			["Size"]         = udim2_new(0, 72, 0, 18),
+			["Color"]        = color3_fromrgb(15, 15, 15),
+			["Transparency"] = 1,
+			["Rounding"]     = 4,
+			["Data"]         = pixel_image_data,
+			["Parent"]       = wm_frame,
+			["ZIndex"]       = 11,
+			["Visible"]      = true,
+		})
+
+		-- text
+		local wm_text_obj = drawing_proxy["new"]("Text", {
+			["Color"]        = color3_fromrgb(255, 255, 255),
+			["Text"]         = wm_default,
+			["Size"]         = 12,
+			["Font"]         = 1,
+			["Transparency"] = 1,
+			["Visible"]      = true,
+			["Parent"]       = wm_inside,
+			["Position"]     = udim2_new(0, 5, 0, identifyexecutor() == "AWP" and 2 or 3),
+			["ZIndex"]       = 12,
+			["RichText"]     = true,
+		})
+
+		-- resize X only (Y is always 20/18)
+		local function refresh_wm_size()
+			local w     = wm_text_obj["TextBounds"]["X"] + 12
+			wm_frame["Size"]  = udim2_new(0, w + 2, 0, 20)
+			wm_inside["Size"] = udim2_new(0, w,     0, 18)
+			local sw = floor((w + 2) / 11)
+			wm_shadow["Size"]     = udim2_new(1, sw - 1, 1, 4)
+			wm_shadow["Position"] = udim2_new(0, -sw / 2, 0, -2)
+		end
+
+		refresh_wm_size()
+
+		-- public api
+		menu["refresh_watermark_size"] = refresh_wm_size
+
+		menu["set_watermark_text"] = function(text)
+			wm_text_obj["Text"] = (text and #text > 0) and text or wm_default
+			refresh_wm_size()
+		end
+
+		menu["show_watermark"] = function()
+			wm_frame["Visible"] = true
+			tween(wm_frame,    { Transparency = 0.7  }, circular, out, 0.15)
+			tween(wm_inside,   show_transparency,       circular, out, 0.15)
+			tween(wm_shadow,   { Transparency = 0.16 }, circular, out, 0.15)
+			tween(wm_text_obj, show_transparency,       circular, out, 0.15)
+			flags["!watermark_visible"] = true
+		end
+
+		menu["hide_watermark"] = function()
+			tween(wm_frame,    hide_transparency, circular, out, 0.15)
+			tween(wm_inside,   hide_transparency, circular, out, 0.15)
+			tween(wm_shadow,   hide_transparency, circular, out, 0.15)
+			tween(wm_text_obj, hide_transparency, circular, out, 0.15)
+			flags["!watermark_visible"] = false
+			delay(0.15, function()
+				if not flags["!watermark_visible"] then
+					wm_frame["Visible"] = false
+				end
+			end)
+		end
+	end
 
 	local right_side = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
@@ -3615,7 +3727,7 @@ do
 							local new_position_y = fake_hud_position["Y"] - (mouse_position_y - new_mouse_position["Y"])
 							local new_position = udim2_new(0, new_position_x, 0, new_position_y)
 
-							list_frame["Position"] = new_position
+							frame["Position"] = new_position
 							flags[flag] = { new_position_x, new_position_y }
 						end)
 
@@ -6577,11 +6689,19 @@ do
 			tween(list_frame, { Color = menu["colors"]["border"], Transparency = 0.2 }, circular, out, 0.15)
 		end)
 
+		local wm_hud_ref = hud_frames["watermark_position"]
+		create_hover_connection(wm_hud_ref, wm_hud_ref, function()
+			tween(wm_hud_ref, { Color = menu["colors"]["highlighted"], Transparency = 1 }, circular, out, 0.15)
+		end, function()
+			tween(wm_hud_ref, { Color = menu["colors"]["border"], Transparency = 0.7 }, circular, out, 0.15)
+		end)
+
 		menu.set_accent_color = LPH_JIT_MAX(function(color)
 			menu["colors"]["accent"] = color
 
 			tab_line["Color"] = color
 			drag_logo["Color"] = color
+			if wm_line then wm_line["Color"] = color end
 			for name, group in menu["groups"] do
 				group["text"]["Color"] = color
 				group["line"]["Color"] = color
@@ -7230,6 +7350,15 @@ do
 						list_frame["Position"] = udim2_new(0, keybinds_position[1], 0, keybinds_position[2])
 					end
 
+					local watermark_position = new_flags["watermark_position"]
+
+					if watermark_position then
+						local wm_hud = hud_frames["watermark_position"]
+						if wm_hud then
+							wm_hud["Position"] = udim2_new(0, watermark_position[1], 0, watermark_position[2])
+						end
+					end
+
 					local skins = new_flags["skins"]
 
 					if skins and type(skins) == "table" then
@@ -7389,7 +7518,7 @@ do
 					["name"] = "keybinds list",
 				}, {
 					["toggle"] = {
-						["default"] = false,
+						["default"] = true,
 						["flag"] = "keybind_list",
 					},
 				})["on_toggle_change"],
@@ -7401,6 +7530,15 @@ do
 					end
 				end
 			)
+
+						menu_references["watermark"] = settings_section:create_element({
+				["name"] = "watermark",
+			}, {
+				["toggle"] = {
+					["default"] = true,
+					["flag"]    = "!watermark_visible",
+				},
+			})
 
 			menu_references["notifications"] = settings_section:create_element({
 				["name"] = "notifications",
@@ -7449,16 +7587,40 @@ do
 				},
 			})
 
+			-- > watermark toggle
+
+			create_connection(menu_references["watermark"]["on_toggle_change"], function(bool)
+				if bool then
+					menu["show_watermark"]()
+				else
+					menu["hide_watermark"]()
+				end
+			end)
+
+			-- > watermark custom text
+--[[			local wm_text_element = settings_section:create_element({
+				["name"] = "watermark text",
+			}, {
+				["textbox"] = {
+					["flag"]    = "!watermark_custom_text",
+					["default"] = nil,
+				},
+			})]]
+
+--[[			create_connection(wm_text_element["on_textbox_change"], function(text)
+				menu["set_watermark_text"](text)
+			end)
+]]
 			create_connection(
 				settings_section:create_element({
-					["name"] = "unload juju",
+					["name"] = "unload",
 				}, {
 					["button"] = {
 						["confirmation"] = true,
 					},
 				})["on_clicked"],
 				function()
-					getgenv()["_JUJU"]()
+					getgenv()["_APPLE"]()
 
 					if identifyexecutor() == "AWP" then
 						cleardrawcache()
@@ -8618,7 +8780,7 @@ do
 	-- > ( loading / unloading )
 
 	do
-		local unload = getgenv()["_JUJU"]
+		local unload = getgenv()["_APPLE"]
 
 		if unload then
 			unload()
@@ -8640,8 +8802,8 @@ do
 
 		getrawmetatable = env["getrawmetatable"]
 
-		env["_JUJU"] = function()
-			env["_JUJU"] = nil
+		env["_APPLE"] = function()
+			env["_APPLE"] = nil
 
 			for _, group in menu["groups"] do
 				for _, tab in group["tabs"] do
