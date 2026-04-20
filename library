@@ -532,67 +532,122 @@ do
 	local create1 = identifyexecutor() == "AWP" and Drawing["new"] or drawing["new"]
 
 	drawing_proxy.new = identifyexecutor() == "AWP"
-			and LPH_NO_VIRTUALIZE(function(class, properties)
-				local object = create1(class)
+and LPH_NO_VIRTUALIZE(function(class, properties)
+    local real_class = class == "Text" and "TextLabel" or class
+    local object = create1(real_class)
 
-				local proxy = setmetatable({
-					["position"] = udim2_new(0, 0, 0, 0),
-					["real_position"] = vector2_new(0, 0),
-					["size"] = class == "Text" and 12 or udim2_new(0, 0, 0, 0),
-					["real_size"] = class == "Text" and 12 or vector2_new(0, 0),
-					["object"] = object,
-					["children"] = {},
-					["parent"] = false,
-					["is_rendering"] = false,
-					["skip"] = class == "Circle",
-					["visible"] = false,
-					["destroy"] = function()
-						object:Destroy()
-					end,
-				}, drawing_proxy)
+    if class == "Text" then
+        object.RichText = true
+        object.TextWrapped = false
+        object.BackgroundTransparency = 1
+    end
 
-				local size = properties["Size"]
-				if size and type(size) == "number" then
-					properties["Size"] = size + 2
-				end
+    local proxy = setmetatable({
+        ["position"] = udim2_new(0, 0, 0, 0),
+        ["real_position"] = vector2_new(0, 0),
+        ["size"] = class == "Text" and 12 or udim2_new(0, 0, 0, 0),
+        ["real_size"] = class == "Text" and 12 or vector2_new(0, 0),
+        ["object"] = object,
+        ["children"] = {},
+        ["parent"] = false,
+        ["is_rendering"] = false,
+        ["skip"] = class == "Circle",
+        ["visible"] = false,
+        ["destroy"] = function()
+            object:Destroy()
+        end,
+    }, drawing_proxy)
 
-				local z_index = properties["ZIndex"]
-				properties["ZIndex"] = z_index and z_index + 20 or 20
+    local size = properties["Size"]
+    if size and type(size) == "number" then
+        properties["Size"] = size + 2
+    end
 
-				for property, value in properties do
-					proxy[property] = value
-				end
+    local z_index = properties["ZIndex"]
+    properties["ZIndex"] = z_index and z_index + 20 or 20
 
-				return proxy
-			end)
-		or LPH_NO_VIRTUALIZE(function(class, properties)
-			local object = create1(class)
+    for property, value in properties do
+        -- mapeamento de propriedades pra UI
+        if class == "Text" then
+            if property == "Text" then
+                object.Text = value
+            elseif property == "Color" then
+                object.TextColor3 = value
+            elseif property == "Center" then
+                object.TextXAlignment = value and Enum.TextXAlignment.Center or Enum.TextXAlignment.Left
+            elseif property == "Outline" then
+                object.TextStrokeTransparency = value and 0 or 1
+            elseif property == "OutlineColor" then
+                object.TextStrokeColor3 = value
+            elseif property == "Size" then
+                object.TextSize = value
+            else
+                object[property] = value
+            end
+        else
+            object[property] = value
+        end
 
-			local proxy = setmetatable({
-				["position"] = udim2_new(0, 0, 0, 0),
-				["real_position"] = vector2_new(0, 0),
-				["size"] = class == "Text" and 12 or udim2_new(0, 0, 0, 0),
-				["real_size"] = class == "Text" and 12 or vector2_new(0, 0),
-				["object"] = object,
-				["children"] = {},
-				["parent"] = false,
-				["is_rendering"] = false,
-				["skip"] = class == "Circle",
-				["visible"] = false,
-				["destroy"] = function()
-					object:Destroy()
-				end,
-			}, drawing_proxy)
+        proxy[property] = value
+    end
 
-			local z_index = properties["ZIndex"]
-			properties["ZIndex"] = z_index and z_index + 20 or 20
+    return proxy
+end)
+or LPH_NO_VIRTUALIZE(function(class, properties)
+    local real_class = class == "Text" and "TextLabel" or class
+    local object = create1(real_class)
 
-			for property, value in properties do
-				proxy[property] = value
-			end
+    if class == "Text" then
+        object.RichText = true
+        object.TextWrapped = false
+        object.BackgroundTransparency = 1
+    end
 
-			return proxy
-		end)
+    local proxy = setmetatable({
+        ["position"] = udim2_new(0, 0, 0, 0),
+        ["real_position"] = vector2_new(0, 0),
+        ["size"] = class == "Text" and 12 or udim2_new(0, 0, 0, 0),
+        ["real_size"] = class == "Text" and 12 or vector2_new(0, 0),
+        ["object"] = object,
+        ["children"] = {},
+        ["parent"] = false,
+        ["is_rendering"] = false,
+        ["skip"] = class == "Circle",
+        ["visible"] = false,
+        ["destroy"] = function()
+            object:Destroy()
+        end,
+    }, drawing_proxy)
+
+    local z_index = properties["ZIndex"]
+    properties["ZIndex"] = z_index and z_index + 20 or 20
+
+    for property, value in properties do
+        if class == "Text" then
+            if property == "Text" then
+                object.Text = value
+            elseif property == "Color" then
+                object.TextColor3 = value
+            elseif property == "Center" then
+                object.TextXAlignment = value and Enum.TextXAlignment.Center or Enum.TextXAlignment.Left
+            elseif property == "Outline" then
+                object.TextStrokeTransparency = value and 0 or 1
+            elseif property == "OutlineColor" then
+                object.TextStrokeColor3 = value
+            elseif property == "Size" then
+                object.TextSize = value
+            else
+                object[property] = value
+            end
+        else
+            object[property] = value
+        end
+
+        proxy[property] = value
+    end
+
+    return proxy
+end)
 
 	getgenv()["_PROXY"] = drawing_proxy
 	menu["create_proxy_drawing"] = drawing_proxy["new"]
@@ -792,10 +847,7 @@ do
 
 	do
 		local viewport   = camera["ViewportSize"]
-		local wm_default = (getgenv().script_name or "juju")
-			.. " " .. (getgenv().script_version or "live")
-			.. "  ·  " .. local_player["Name"]
-			.. "  ·  " .. os.date("%a, %b %d %Y")
+		local wm_default = "apple def"
 
 		local wm_init_x = flags["watermark_position"][1]
 		local wm_init_y = flags["watermark_position"][2]
