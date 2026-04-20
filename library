@@ -390,7 +390,7 @@ do
 				["spam.json"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/spam.json"),
 			},
 			["themes"] = {
-				["theme.th"] = safeHttp("https://raw.githubusercontent.com/emptyusesdx9/appleware/refs/heads/main/utility/themes/default.th"),
+				["theme.th"] = safeHttp("https://raw.githubusercontent.com/emptyusesdx9/appleware/refs/heads/main/utility/themes/theme.th"),
 			},
 			["addons"] = {},
 			["configs"] = {},
