@@ -306,7 +306,7 @@ local menu = {
 	groups = {},
 	favorites = {},
 	autoload = nil,
-	initial_base_offset = 78,
+	initial_base_offset = 64,
 	ordered_groups = {},
 	theme = "",
 }
@@ -779,7 +779,7 @@ do
 
 	do
 		local is_awp    = identifyexecutor() == "AWP"
-		local txt_y     = is_awp and 7 or 8
+		local txt_y     = is_awp and 8 or 9
 		local h_outer   = 31
 		local h_inner   = h_outer - 2
 		local pad_l     = 14    -- space after the accent bar
@@ -875,7 +875,7 @@ do
 			local name_w = wm_name["TextBounds"]["X"]
 			local info_w = wm_info["TextBounds"]["X"]
 			local info_x = pad_l + name_w + gap
-			local total  = bar_w + info_x + info_w + pad_r + 2
+			local total  = math.max(bar_w + info_x + info_w + pad_r + 2, 257)
 			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h_outer)
 			wm_inside["Size"] = udim2_new(0, total,     0, h_inner)
 			wm_info["Position"] = udim2_new(0, info_x, 0, txt_y)
@@ -973,7 +973,7 @@ do
 		["Parent"] = inside,
 		["Position"] = udim2_new(0, 0, 0, 0),
 		["Size"] = udim2_new(1, 0, 0, topbar_height),
-		["Color"] = color3_fromrgb(27, 29, 30),
+		["Color"] = menu["colors"]["section"],
 		["Filled"] = true,
 		["Transparency"] = 1,
 		["Visible"] = true,
@@ -1010,13 +1010,23 @@ do
 		["Visible"] = true,
 	})
 
+	local bottom_bar = drawing_proxy["new"]("Square", {
+		["Parent"] = inside,
+		["Position"] = udim2_new(0, 0, 1, -36),
+		["Size"] = udim2_new(0, sidebar_width, 0, 36),
+		["Color"] = menu["colors"]["section"],
+		["Filled"] = true,
+		["Transparency"] = 1,
+		["Visible"] = true,
+	})
+
 	local search_image = drawing_proxy["new"]("Image", {
 		["Color"] = menu["colors"]["image"],
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAYAAAAAEAAABgAAAAAQAAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAADp1fY4ytpsegAAAGdJREFUKFONkGEWgCAIg5GTdP9LlqPBA8Pq+yFuOvA5JHFOuDXGhNvAjPVipgtZAFAGtIuvbrSdRA4sJQQBKB/wOM6V9TevAe+cn6su8liwaieSuwuONy4/k0PdZHglsKOEWD+5QyIX+wJP/y1yP3IAAAAASUVORK5CYII="
 		),
-		["Position"] = udim2_new(0, 27, 1, -27),
-		["Parent"] = inside,
+		["Position"] = udim2_new(0, 27, 0, 12),
+		["Parent"] = bottom_bar,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
 		["ZIndex"] = 999,
@@ -1028,8 +1038,8 @@ do
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAiF8BAOgDAACIXwEA6AMAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAAC1cWHl18YwawAAAH5JREFUKFOFkAsOgCAMQwE5lIfx/qeA4Do7ZCL6ErOWtHwMb7TWinyN1pE4Owxul5uJnAp2ljGFo0B5F1Zhw0p6JVxDfIZegQymtroRTK9wj0bYjl5QtTCGPkqHLGcXpFRQGtYqwhDuDU9YKhYGaQwjAGix0S7W/z0UAO0PIZyip02b2JexIAAAAABJRU5ErkJggg=="
 		),
-		["Position"] = udim2_new(0, 44, 1, -27),
-		["Parent"] = inside,
+		["Position"] = udim2_new(0, 44, 0, 12),
+		["Parent"] = bottom_bar,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
 		["Visible"] = true,
@@ -1040,8 +1050,8 @@ do
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAMAAABhq6zVAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf///wAAAFXC034AAAACdFJOU/8A5bcwSgAAAAlwSFlzAAALEwAACxMBAJqcGAAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIDUuMS4y+7wDtgAAALZlWElmSUkqAAgAAAAFABoBBQABAAAASgAAABsBBQABAAAAUgAAACgBAwABAAAAAgAAADEBAgAQAAAAWgAAAGmHBAABAAAAagAAAAAAAABJGQEA6AMAAEkZAQDoAwAAUGFpbnQuTkVUIDUuMS4yAAMAAJAHAAQAAAAwMjMwAaADAAEAAAABAAAABaAEAAEAAACUAAAAAAAAAAIAAQACAAQAAABSOTgAAgAHAAQAAAAwMTAwAAAAAC/Sb/YZ+v7JAAAAMklEQVQYV1WLARIAQAQC9f9Pn65oNAZpFajyUHn0MtJZWkbdt+QxBwtA47X1kzDk9QY8FowASc0mZqAAAAAASUVORK5CYII="
 		),
-		["Position"] = udim2_new(0, 61, 1, -27),
-		["Parent"] = inside,
+		["Position"] = udim2_new(0, 61, 0, 12),
+		["Parent"] = bottom_bar,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
 		["Visible"] = true,
@@ -4216,6 +4226,7 @@ do
 		tween(inside, transparency, exponential, out, 0.18)
 		tween(juju_text, transparency, exponential, out, 0.18)
 		tween(top_bar, transparency, exponential, out, 0.18)
+		tween(bottom_bar, transparency, exponential, out, 0.18)
 		tween(top_title, transparency, exponential, out, 0.18)
 		tween(top_close, transparency, exponential, out, 0.18)
 		tween(right_side, transparency, exponential, out, 0.18)
@@ -4433,8 +4444,8 @@ do
 		actives["tab"] = tab
 	end
 
-	local group_header_height = 34
-	local tab_vertical_step = 18
+	local group_header_height = 38
+	local tab_vertical_step = 20
 
 	function menu.update_layout()
 		local current_y_offset = menu["initial_base_offset"]
@@ -4472,23 +4483,23 @@ do
 
 			if should_be_visible then
 				if group_text then
-					group_text["Position"] = udim2_new(0, 15, 0, current_y_offset)
+					group_text["Position"] = udim2_new(0, 14, 0, current_y_offset)
 				end
 				if group_line then
-					group_line["Position"] = udim2_new(0, 15, 0, current_y_offset + 15)
+					group_line["Position"] = udim2_new(0, 14, 0, current_y_offset + 17)
 				end
 
-				local base_tab_y = current_y_offset + 20
+				local base_tab_y = current_y_offset + 24
 				for tab_index = 1, num_tabs do
 					local tab = ordered_tabs[tab_index]
 					local tab_text = tab["text"]
 					local tab_text_frame = tab["text_frame"]
 					local new_tab_y = base_tab_y + (tab_index - 1) * tab_vertical_step
-					local new_tab_position = udim2_new(0, 16, 0, new_tab_y)
+					local new_tab_position = udim2_new(0, 14, 0, new_tab_y)
 
 					tab["position"] = new_tab_position
 					if tab_text then
-						tab_text["Position"] = actives["tab"] == tab and udim2_new(0, 22, 0, new_tab_y)
+						tab_text["Position"] = actives["tab"] == tab and udim2_new(0, 21, 0, new_tab_y)
 							or new_tab_position
 					end
 					if tab_text_frame then
@@ -4549,16 +4560,16 @@ do
 				["Transparency"] = 0.5,
 				["Text"] = name,
 				["Parent"] = inside,
-				["Size"] = 14,
+				["Size"] = 16,
 				["Font"] = 1,
-				["Position"] = udim2_new(0, 15, 0, initial_offset),
+				["Position"] = udim2_new(0, 14, 0, initial_offset),
 				["Visible"] = true,
 			}),
 			["line"] = drawing_proxy["new"]("Square", {
 				["Parent"] = inside,
 				["Transparency"] = 0.5,
-				["Position"] = udim2_new(0, 15, 0, initial_offset + 15),
-				["Size"] = udim2_new(0, 70, 0, 1),
+				["Position"] = udim2_new(0, 14, 0, initial_offset + 17),
+				["Size"] = udim2_new(0, 72, 0, 1),
 				["Color"] = menu["colors"]["accent"],
 				["Filled"] = true,
 				["Visible"] = true,
@@ -4575,14 +4586,14 @@ do
 		local group_initial_offset = self["initial_offset"]
 		local ordered_tabs = self["ordered_tabs"]
 		local index = #ordered_tabs + 1
-		local position = udim2_new(0, 16, 0, group_initial_offset + 20 + (index - 1) * tab_vertical_step)
+		local position = udim2_new(0, 14, 0, group_initial_offset + 24 + (index - 1) * tab_vertical_step)
 		local is_group_visible = self["is_visible"]
 
 		local new_tab = {
 			["text"] = drawing_proxy["new"]("Text", {
 				["Color"] = menu["colors"]["inactive_text"],
 				["Text"] = name:sub(1, 12),
-				["Size"] = 12,
+				["Size"] = 14,
 				["Font"] = 1,
 				["Visible"] = is_group_visible,
 				["Parent"] = inside,
@@ -4938,14 +4949,14 @@ do
 			["Transparency"] = 1,
 			["Visible"] = true,
 			["Parent"] = search_inside,
-			["Position"] = udim2_new(0, 22, 0, 3),
+			["Position"] = udim2_new(0, 22, 0, 2),
 		})
 		local search_image = drawing_proxy["new"]("Image", {
 			["Color"] = menu["colors"]["inactive_text"],
 			["Data"] = base64_decode(
 				"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAYAAAAAEAAABgAAAAAQAAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAADp1fY4ytpsegAAAGdJREFUKFONkGEWgCAIg5GTdP9LlqPBA8Pq+yFuOvA5JHFOuDXGhNvAjPVipgtZAFAGtIuvbrSdRA4sJQQBKB/wOM6V9TevAe+cn6su8liwaieSuwuONy4/k0PdZHglsKOEWD+5QyIX+wJP/y1yP3IAAAAASUVORK5CYII="
 			),
-			["Position"] = udim2_new(0, 4, 0, 4),
+			["Position"] = udim2_new(0, 4, 0, 3),
 			["Parent"] = search_inside,
 			["Size"] = udim2_new(0, 12, 0, 12),
 			["Transparency"] = 1,
@@ -8189,6 +8200,8 @@ do
 				function(color)
 					menu["colors"]["section"] = color
 					inside["Color"] = color
+					top_bar["Color"] = color
+					bottom_bar["Color"] = color
 
 					for name, group in menu["groups"] do
 						for name, tab in group["tabs"] do
