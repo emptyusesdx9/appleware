@@ -280,10 +280,10 @@ end
 
 local menu = {
 	on_config_loaded = signal["new"](),
-	accent = color3_fromrgb(103, 53, 53),
+	accent = color3_fromrgb(178, 58, 104),
 	colors = {
 		["shadow"]        = color3_fromrgb(209, 23, 23),
-		["accent"]        = color3_fromrgb(209, 23, 23),
+		["accent"]        = color3_fromrgb(178, 58, 104),
 		["active_text"]   = color3_fromrgb(220, 220, 220),
 		["keybind_text"]  = color3_fromrgb(185, 185, 185),
 		["border"]        = color3_fromrgb(8, 8, 8),
@@ -291,8 +291,8 @@ local menu = {
 		["highlighted"]   = color3_fromrgb(30, 20, 20),
 		["dark_text"]     = color3_fromrgb(146, 146, 146),
 		["image"]         = color3_fromrgb(192, 192, 192),
-		["section"]       = color3_fromrgb(8, 8, 8),
-		["background"]    = color3_fromrgb(5, 5, 5),
+		["section"]       = color3_fromrgb(21, 21, 21),
+		["background"]    = color3_fromrgb(16, 16, 16),
 		["success"]       = color3_fromrgb(138, 253, 128),
 		["error"]         = color3_fromrgb(155, 45, 45),
 		["alert"]         = color3_fromrgb(60, 30, 20),
@@ -769,14 +769,12 @@ do
 	-- > ( watermark )
 
 	do
-		local is_awp    = identifyexecutor() == "AWP"
-		local txt_y     = is_awp and 6 or 7
-		local h_outer   = 26
-		local h_inner   = h_outer - 2
-		local pad_l     = 14    -- space after the accent bar
-		local pad_r     = 10   -- right padding
-		local gap       = 5    -- gap between name and info text
-		local bar_w     = 2    -- left accent bar width
+		local is_awp  = identifyexecutor() == "AWP"
+		local h       = 26        -- total height
+		local bar_w   = 2         -- left accent bar width
+		local pad_l   = 10        -- text left padding (after bar)
+		local pad_r   = 10        -- text right padding
+		local txt_y   = is_awp and 6 or 7
 
 		local wm_init_x = flags["watermark_position"][1]
 		local wm_init_y = flags["watermark_position"][2]
@@ -784,7 +782,7 @@ do
 		-- outer border frame
 		local wm_frame = drawing_proxy["new"]("Image", {
 			["Position"]     = udim2_new(0, wm_init_x, 0, wm_init_y),
-			["Size"]         = udim2_new(0, 10, 0, h_outer),
+			["Size"]         = udim2_new(0, 10, 0, h),
 			["Color"]        = color3_fromrgb(38, 38, 38),
 			["Transparency"] = 0,
 			["Rounding"]     = 3,
@@ -808,10 +806,10 @@ do
 			["Position"]     = udim2_new(0, -4, 0, -3),
 		})
 
-		-- dark inner fill
+		-- dark inner fill (1px inset on all sides except left -- bar sits flush)
 		local wm_inside = drawing_proxy["new"]("Image", {
 			["Position"]     = udim2_new(0, 1, 0, 1),
-			["Size"]         = udim2_new(0, 10, 0, h_inner),
+			["Size"]         = udim2_new(0, 8, 0, h - 2),
 			["Color"]        = color3_fromrgb(16, 16, 16),
 			["Transparency"] = 1,
 			["Rounding"]     = 3,
@@ -821,19 +819,21 @@ do
 			["Visible"]      = true,
 		})
 
-		-- left accent bar (covers full inner height)
-		local wm_bar = drawing_proxy["new"]("Square", {
-			["Parent"]       = wm_inside,
+		-- left accent bar: parented to wm_frame, full height, sits at x=0
+		-- (parented to frame not inside so it covers the full rounded edge)
+		local wm_bar = drawing_proxy["new"]("Image", {
+			["Parent"]       = wm_frame,
 			["Position"]     = udim2_new(0, 0, 0, 0),
-			["Size"]         = udim2_new(0, bar_w, 1, 0),
+			["Size"]         = udim2_new(0, bar_w, 0, h),
 			["Color"]        = menu["colors"]["accent"],
-			["Filled"]       = true,
 			["Transparency"] = 0,
-			["ZIndex"]       = 12,
+			["Rounding"]     = 3,
+			["Data"]         = pixel_image_data,
+			["ZIndex"]       = 13,
 			["Visible"]      = true,
 		})
 
-		-- "marceline" in accent color
+		-- "marceline" text in accent color
 		local wm_name = drawing_proxy["new"]("Text", {
 			["Color"]        = menu["colors"]["accent"],
 			["Text"]         = "marceline",
@@ -842,70 +842,29 @@ do
 			["Transparency"] = 1,
 			["Visible"]      = true,
 			["Parent"]       = wm_inside,
-			["Position"]     = udim2_new(0, pad_l, 0, txt_y),
-			["ZIndex"]       = 12,
+			["Position"]     = udim2_new(0, bar_w + pad_l, 0, txt_y),
+			["ZIndex"]       = 14,
 		})
 
-		-- info text: "ver X.X.X | FPS fps | HH:MM" in active_text color
-		local wm_info = drawing_proxy["new"]("Text", {
-			["Color"]        = menu["colors"]["active_text"],
-			["Text"]         = "",
-			["Size"]         = 13,
-			["Font"]         = 1,
-			["Transparency"] = 1,
-			["Visible"]      = true,
-			["Parent"]       = wm_inside,
-			["Position"]     = udim2_new(0, pad_l, 0, txt_y),
-			["ZIndex"]       = 12,
-		})
-
-		-- auto-resize: total width = bar + padL + nameW + gap + infoW + padR
+		-- resize: defer ONE frame so TextBounds is populated by the renderer
 		local function refresh_wm_size()
 			local name_w = wm_name["TextBounds"]["X"]
-			local info_w = wm_info["TextBounds"]["X"]
-			local total  = bar_w + pad_l + name_w + gap + info_w + pad_r
-			-- reposition info right after name
-			wm_info["Position"] = udim2_new(0, pad_l + name_w + gap, 0, txt_y)
-			-- resize frames
-			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h_outer)
-			wm_inside["Size"] = udim2_new(0, total,     0, h_inner)
-			-- shadow scales with frame
+			if name_w == 0 then return end   -- not rendered yet, skip
+			local total = bar_w + pad_l + name_w + pad_r
+			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h)
+			wm_inside["Size"] = udim2_new(0, total - bar_w, 0, h - 2)
+			wm_bar["Size"]    = udim2_new(0, bar_w, 0, h)
 			local sw = floor((total + 2) / 11)
 			wm_shadow["Size"]     = udim2_new(1, sw, 1, 6)
 			wm_shadow["Position"] = udim2_new(0, -sw / 2, 0, -3)
 		end
 
-		-- FPS + clock update (runs every ~0.5s via heartbeat)
-		local fps_acc    = 0
-		local fps_frames = 0
-		local fps_timer  = 0
-		local fps_last   = 0
-
-		local function update_wm_info(dt)
-			fps_frames += 1
-			fps_timer  += dt
-			if fps_timer >= 0.5 then
-				fps_last   = math.floor(fps_frames / fps_timer + 0.5)
-				fps_frames = 0
-				fps_timer  = 0
-				local ver  = tostring(getgenv().script_version or "1.0.0")
-				local time = os.date("%H:%M")
-				wm_info["Text"] = "ver " .. ver .. "  |  " .. fps_last .. " fps  |  " .. time
-				refresh_wm_size()
-			end
-		end
-
-		-- bootstrap: run once so info text is not empty on first frame
-		do
-			local ver  = tostring(getgenv().script_version or "1.0.0")
-			local time = os.date("%H:%M")
-			wm_info["Text"] = "ver " .. ver .. "  |  0 fps  |  " .. time
+		-- defer so the renderer has had one frame to calculate TextBounds
+		spawn(function()
+			task.wait()
 			refresh_wm_size()
-		end
+		end)
 
-		heartbeat[#heartbeat + 1] = update_wm_info
-
-		-- public api
 		menu["refresh_watermark_size"] = refresh_wm_size
 
 		menu["show_watermark"] = function()
@@ -913,8 +872,8 @@ do
 			tween(wm_frame,  { Transparency = 0.7  }, circular, out, 0.15)
 			tween(wm_inside, show_transparency,       circular, out, 0.15)
 			tween(wm_shadow, { Transparency = 0.16 }, circular, out, 0.15)
+			tween(wm_bar,    show_transparency,       circular, out, 0.15)
 			tween(wm_name,   show_transparency,       circular, out, 0.15)
-			tween(wm_info,   show_transparency,       circular, out, 0.15)
 			flags["!watermark_visible"] = true
 		end
 
@@ -922,8 +881,8 @@ do
 			tween(wm_frame,  hide_transparency, circular, out, 0.15)
 			tween(wm_inside, hide_transparency, circular, out, 0.15)
 			tween(wm_shadow, hide_transparency, circular, out, 0.15)
+			tween(wm_bar,    hide_transparency, circular, out, 0.15)
 			tween(wm_name,   hide_transparency, circular, out, 0.15)
-			tween(wm_info,   hide_transparency, circular, out, 0.15)
 			flags["!watermark_visible"] = false
 			delay(0.15, function()
 				if not flags["!watermark_visible"] then
@@ -932,7 +891,7 @@ do
 			end)
 		end
 
-		-- set_accent_color hook so wm_bar tracks theme changes
+		-- accent color hook
 		local _orig_set_accent = menu.set_accent_color
 		menu.set_accent_color = function(color)
 			if _orig_set_accent then _orig_set_accent(color) end
