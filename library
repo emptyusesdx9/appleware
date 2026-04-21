@@ -754,56 +754,40 @@ do
 		["Visible"] = false,
 	})
 
-	local logo = drawing_proxy["new"]("Image", {
-		["Color"] = menu["colors"]["accent"],
-		["Data"] = readfile(file_path .. "/assets/logo.png"),
-		["Position"] = udim2_new(0, 15, 0, 15),
-		["Parent"] = inside,
-		["Size"] = udim2_new(0, 35, 0, 35),
-		["Visible"] = true,
-		["Transparency"] = 1,
-	})
-
+	-- script name label (top-left of sidebar, no logo)
 	local juju_text = drawing_proxy["new"]("Text", {
-		["Font"] = 1,
-		["Color"] = color3_fromrgb(255, 255, 255),
-		["Text"] = getgenv().script_name or "juju",
-		["Parent"] = logo,
-		["Position"] = udim2_new(1, 5, 0, 3),
-		["Size"] = 14,
-		["Visible"] = true,
-		["Transparency"] = 1,
-	})
-
-	local build_text = drawing_proxy["new"]("Text", {
-		["Font"] = 1,
-		["Color"] = menu["colors"]["accent"],
-		["Text"] = getgenv().script_version or "live",
-		["Parent"] = logo,
-		["Position"] = udim2_new(1, 5, 0, 19),
-		["Size"] = 14,
-		["Visible"] = true,
+		["Font"]         = 1,
+		["Color"]        = color3_fromrgb(255, 255, 255),
+		["Text"]         = getgenv().script_name or "marceline",
+		["Parent"]       = inside,
+		["Position"]     = udim2_new(0, 15, 0, 18),
+		["Size"]         = 14,
+		["Visible"]      = true,
 		["Transparency"] = 1,
 	})
 
 	-- > ( watermark )
 
-	local wm_line = nil
-
 	do
-		local viewport   = camera["ViewportSize"]
-		local wm_default = "apple def"
+		local is_awp    = identifyexecutor() == "AWP"
+		local txt_y     = is_awp and 6 or 7
+		local h_outer   = 26
+		local h_inner   = h_outer - 2
+		local pad_l     = 14    -- space after the accent bar
+		local pad_r     = 10   -- right padding
+		local gap       = 5    -- gap between name and info text
+		local bar_w     = 2    -- left accent bar width
 
 		local wm_init_x = flags["watermark_position"][1]
 		local wm_init_y = flags["watermark_position"][2]
 
-		-- outer border (same role as list_frame)
+		-- outer border frame
 		local wm_frame = drawing_proxy["new"]("Image", {
 			["Position"]     = udim2_new(0, wm_init_x, 0, wm_init_y),
-			["Size"]         = udim2_new(0, 74, 0, 20),
-			["Color"]        = menu["colors"]["border"],
+			["Size"]         = udim2_new(0, 10, 0, h_outer),
+			["Color"]        = color3_fromrgb(38, 38, 38),
 			["Transparency"] = 0,
-			["Rounding"]     = 4,
+			["Rounding"]     = 3,
 			["Data"]         = pixel_image_data,
 			["ZIndex"]       = 10,
 			["Visible"]      = true,
@@ -811,86 +795,149 @@ do
 
 		hud_frames["watermark_position"] = wm_frame
 
-		-- shadow (same role as list_shadow)
+		-- shadow
 		local wm_shadow = drawing_proxy["new"]("Image", {
 			["Parent"]       = wm_frame,
 			["Data"]         = shadow_image_data,
 			["Rounding"]     = 7,
 			["Color"]        = menu["colors"]["shadow"],
 			["Transparency"] = 0.16,
-			["Size"]         = udim2_new(1, 6, 1, 4),
+			["Size"]         = udim2_new(1, 8, 1, 6),
 			["ZIndex"]       = 9,
 			["Visible"]      = true,
-			["Position"]     = udim2_new(0, -3, 0, -2),
+			["Position"]     = udim2_new(0, -4, 0, -3),
 		})
 
-		-- dark inner frame (same role as list_inside)
+		-- dark inner fill
 		local wm_inside = drawing_proxy["new"]("Image", {
 			["Position"]     = udim2_new(0, 1, 0, 1),
-			["Size"]         = udim2_new(0, 72, 0, 18),
-			["Color"]        = color3_fromrgb(15, 15, 15),
+			["Size"]         = udim2_new(0, 10, 0, h_inner),
+			["Color"]        = color3_fromrgb(16, 16, 16),
 			["Transparency"] = 1,
-			["Rounding"]     = 4,
+			["Rounding"]     = 3,
 			["Data"]         = pixel_image_data,
 			["Parent"]       = wm_frame,
 			["ZIndex"]       = 11,
 			["Visible"]      = true,
 		})
 
-		-- text
-		local wm_text_obj = drawing_proxy["new"]("Text", {
-			["Color"]        = color3_fromrgb(255, 255, 255),
-			["Text"]         = wm_default,
-			["Size"]         = 12,
+		-- left accent bar (covers full inner height)
+		local wm_bar = drawing_proxy["new"]("Square", {
+			["Parent"]       = wm_inside,
+			["Position"]     = udim2_new(0, 0, 0, 0),
+			["Size"]         = udim2_new(0, bar_w, 1, 0),
+			["Color"]        = menu["colors"]["accent"],
+			["Filled"]       = true,
+			["Transparency"] = 0,
+			["ZIndex"]       = 12,
+			["Visible"]      = true,
+		})
+
+		-- "marceline" in accent color
+		local wm_name = drawing_proxy["new"]("Text", {
+			["Color"]        = menu["colors"]["accent"],
+			["Text"]         = "marceline",
+			["Size"]         = 13,
 			["Font"]         = 1,
 			["Transparency"] = 1,
 			["Visible"]      = true,
 			["Parent"]       = wm_inside,
-			["Position"]     = udim2_new(0, 5, 0, identifyexecutor() == "AWP" and 2 or 3),
+			["Position"]     = udim2_new(0, pad_l, 0, txt_y),
 			["ZIndex"]       = 12,
-			["RichText"]     = true,
 		})
 
-		-- resize X only (Y is always 20/18)
+		-- info text: "ver X.X.X | FPS fps | HH:MM" in active_text color
+		local wm_info = drawing_proxy["new"]("Text", {
+			["Color"]        = menu["colors"]["active_text"],
+			["Text"]         = "",
+			["Size"]         = 13,
+			["Font"]         = 1,
+			["Transparency"] = 1,
+			["Visible"]      = true,
+			["Parent"]       = wm_inside,
+			["Position"]     = udim2_new(0, pad_l, 0, txt_y),
+			["ZIndex"]       = 12,
+		})
+
+		-- auto-resize: total width = bar + padL + nameW + gap + infoW + padR
 		local function refresh_wm_size()
-			local w     = wm_text_obj["TextBounds"]["X"] + 12
-			wm_frame["Size"]  = udim2_new(0, w + 2, 0, 20)
-			wm_inside["Size"] = udim2_new(0, w,     0, 18)
-			local sw = floor((w + 2) / 11)
-			wm_shadow["Size"]     = udim2_new(1, sw - 1, 1, 4)
-			wm_shadow["Position"] = udim2_new(0, -sw / 2, 0, -2)
+			local name_w = wm_name["TextBounds"]["X"]
+			local info_w = wm_info["TextBounds"]["X"]
+			local total  = bar_w + pad_l + name_w + gap + info_w + pad_r
+			-- reposition info right after name
+			wm_info["Position"] = udim2_new(0, pad_l + name_w + gap, 0, txt_y)
+			-- resize frames
+			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h_outer)
+			wm_inside["Size"] = udim2_new(0, total,     0, h_inner)
+			-- shadow scales with frame
+			local sw = floor((total + 2) / 11)
+			wm_shadow["Size"]     = udim2_new(1, sw, 1, 6)
+			wm_shadow["Position"] = udim2_new(0, -sw / 2, 0, -3)
 		end
 
-		refresh_wm_size()
+		-- FPS + clock update (runs every ~0.5s via heartbeat)
+		local fps_acc    = 0
+		local fps_frames = 0
+		local fps_timer  = 0
+		local fps_last   = 0
+
+		local function update_wm_info(dt)
+			fps_frames += 1
+			fps_timer  += dt
+			if fps_timer >= 0.5 then
+				fps_last   = math.floor(fps_frames / fps_timer + 0.5)
+				fps_frames = 0
+				fps_timer  = 0
+				local ver  = tostring(getgenv().script_version or "1.0.0")
+				local time = os.date("%H:%M")
+				wm_info["Text"] = "ver " .. ver .. "  |  " .. fps_last .. " fps  |  " .. time
+				refresh_wm_size()
+			end
+		end
+
+		-- bootstrap: run once so info text is not empty on first frame
+		do
+			local ver  = tostring(getgenv().script_version or "1.0.0")
+			local time = os.date("%H:%M")
+			wm_info["Text"] = "ver " .. ver .. "  |  0 fps  |  " .. time
+			refresh_wm_size()
+		end
+
+		heartbeat[#heartbeat + 1] = update_wm_info
 
 		-- public api
 		menu["refresh_watermark_size"] = refresh_wm_size
 
-		menu["set_watermark_text"] = function(text)
-			wm_text_obj["Text"] = (text and #text > 0) and text or wm_default
-			refresh_wm_size()
-		end
-
 		menu["show_watermark"] = function()
 			wm_frame["Visible"] = true
-			tween(wm_frame,    { Transparency = 0.7  }, circular, out, 0.15)
-			tween(wm_inside,   show_transparency,       circular, out, 0.15)
-			tween(wm_shadow,   { Transparency = 0.16 }, circular, out, 0.15)
-			tween(wm_text_obj, show_transparency,       circular, out, 0.15)
+			tween(wm_frame,  { Transparency = 0.7  }, circular, out, 0.15)
+			tween(wm_inside, show_transparency,       circular, out, 0.15)
+			tween(wm_shadow, { Transparency = 0.16 }, circular, out, 0.15)
+			tween(wm_name,   show_transparency,       circular, out, 0.15)
+			tween(wm_info,   show_transparency,       circular, out, 0.15)
 			flags["!watermark_visible"] = true
 		end
 
 		menu["hide_watermark"] = function()
-			tween(wm_frame,    hide_transparency, circular, out, 0.15)
-			tween(wm_inside,   hide_transparency, circular, out, 0.15)
-			tween(wm_shadow,   hide_transparency, circular, out, 0.15)
-			tween(wm_text_obj, hide_transparency, circular, out, 0.15)
+			tween(wm_frame,  hide_transparency, circular, out, 0.15)
+			tween(wm_inside, hide_transparency, circular, out, 0.15)
+			tween(wm_shadow, hide_transparency, circular, out, 0.15)
+			tween(wm_name,   hide_transparency, circular, out, 0.15)
+			tween(wm_info,   hide_transparency, circular, out, 0.15)
 			flags["!watermark_visible"] = false
 			delay(0.15, function()
 				if not flags["!watermark_visible"] then
 					wm_frame["Visible"] = false
 				end
 			end)
+		end
+
+		-- set_accent_color hook so wm_bar tracks theme changes
+		local _orig_set_accent = menu.set_accent_color
+		menu.set_accent_color = function(color)
+			if _orig_set_accent then _orig_set_accent(color) end
+			wm_bar["Color"]  = color
+			wm_name["Color"] = color
 		end
 	end
 
@@ -4130,9 +4177,7 @@ do
 
 		tween(frame, transparency, exponential, out, 0.18)
 		tween(inside, transparency, exponential, out, 0.18)
-		tween(logo, transparency, exponential, out, 0.18)
 		tween(juju_text, transparency, exponential, out, 0.18)
-		tween(build_text, transparency, exponential, out, 0.18)
 		tween(right_side, transparency, exponential, out, 0.18)
 		tween(right_side_divider, transparency, exponential, out, 0.18)
 		tween(search_image, transparency, exponential, out, 0.18)
@@ -7683,7 +7728,6 @@ do
 				})["on_color_change"],
 				function(color)
 					menu["colors"]["juju"] = color
-					juju_text["Color"] = color
 				end
 			)
 
@@ -7700,7 +7744,6 @@ do
 				})["on_color_change"],
 				function(color)
 					menu["colors"]["logo"] = color
-					logo["Color"] = color
 				end
 			)
 
@@ -7733,7 +7776,6 @@ do
 				})["on_color_change"],
 				function(color)
 					menu["colors"]["build"] = color
-					build_text["Color"] = color
 				end
 			)
 
