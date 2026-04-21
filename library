@@ -279,26 +279,26 @@ end
 
 local menu = {
 	on_config_loaded = signal["new"](),
-	accent = color3_fromrgb(178, 58, 104),
+	accent = color3_fromrgb(234, 48, 140),
 	colors = {
-		["shadow"] = color3_fromrgb(154, 213, 222),
-		["accent"] = color3_fromrgb(154, 213, 222),
+		["shadow"] = color3_fromrgb(239, 32, 118),
+		["accent"] = color3_fromrgb(234, 48, 140),
 		["active_text"] = color3_fromrgb(197, 197, 197),
 		["keybind_text"] = color3_fromrgb(197, 197, 197),
 		["border"] = color3_fromrgb(24, 25, 24),
 		["inactive_text"] = color3_fromrgb(75, 72, 72),
-		["highlighted"] = color3_fromrgb(51, 65, 70),
-		["dark_text"] = color3_fromrgb(70, 85, 87),
+		["highlighted"] = color3_fromrgb(81, 81, 81),
+		["dark_text"] = color3_fromrgb(93, 93, 93),
 		["image"] = color3_fromrgb(89, 89, 89),
-		["section"] = color3_fromrgb(6, 6, 6),
+		["section"] = color3_fromrgb(10, 10, 10),
 		["background"] = color3_fromrgb(0, 0, 0),
-		["success"] = color3_fromrgb(154, 213, 222),
+		["success"] = color3_fromrgb(239, 22, 79),
 		["error"] = color3_fromrgb(39, 60, 96),
 		["alert"] = color3_fromrgb(30, 51, 61),
-		["logo"] = color3_fromrgb(154, 213, 222),
-		["juju"] = color3_fromrgb(154, 213, 222),
-		["build"] = color3_fromrgb(154, 213, 222),
-		["cursor"] = color3_fromrgb(154, 213, 222),
+		["logo"] = color3_fromrgb(247, 247, 247),
+		["juju"] = color3_fromrgb(255, 255, 255),
+		["build"] = color3_fromrgb(255, 255, 255),
+		["cursor"] = color3_fromrgb(255, 255, 255),
 	},
 	settings = {},
 	notifications = {},
@@ -496,7 +496,7 @@ do
 		"iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf///wAAAFXC034AAAACdFJOU/8A5bcwSgAAAAlwSFlzAAAQKAAAECgBJz8A6wAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIDUuMS4y+7wDtgAAALZlWElmSUkqAAgAAAAFABoBBQABAAAASgAAABsBBQABAAAAUgAAACgBAwABAAAAAgAAADEBAgAQAAAAWgAAAGmHBAABAAAAagAAAAAAAAB3mgEA6AMAAHeaAQDoAwAAUGFpbnQuTkVUIDUuMS4yAAMAAJAHAAQAAAAwMjMwAaADAAEAAAABAAAABaAEAAEAAACUAAAAAAAAAAIAAQACAAQAAABSOTgAAgAHAAQAAAAwMTAwAAAAAEyPNqYn0aVIAAAALElEQVQYV2NgBAIGCAmioQhIQACQCZaGYBAJoZGYSApgUhATYAiikJGRkREACr4AMZ+SUSoAAAAASUVORK5CYII="
 	)
 	local menu_position =
-		udim2_new(0, camera["ViewportSize"]["X"] / 2 - 575 / 2, 0, camera["ViewportSize"]["Y"] / 2 - 450 * 0.5)
+		udim2_new(0, camera["ViewportSize"]["X"] / 2 - 700 / 2, 0, camera["ViewportSize"]["Y"] / 2 - 565 * 0.5)
 
 	local half_transparency = { Transparency = 0.5 }
 	local stop_panel_search = nil
@@ -734,9 +734,9 @@ do
 
 	local frame = drawing_proxy["new"]("Image", {
 		["Position"] = menu_position,
-		["Size"] = udim2_new(0, 575, 0, 450),
+		["Size"] = udim2_new(0, 700, 0, 565),
 		["Color"] = menu["colors"]["background"],
-		["Rounding"] = 4,
+		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
 		["Transparency"] = 1,
 		["Visible"] = false,
@@ -746,7 +746,7 @@ do
 		["Position"] = udim2_new(0, 1, 0, 1),
 		["Size"] = udim2_new(1, -2, 1, -2),
 		["Color"] = menu["colors"]["section"],
-		["Rounding"] = 4,
+		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
 		["Transparency"] = 1,
 		["Parent"] = frame,
@@ -765,12 +765,12 @@ do
 
 	local juju_text = drawing_proxy["new"]("Text", {
 		["Font"] = 1,
-		["Color"] = color3_fromrgb(255, 255, 255),
+		["Color"] = menu["colors"]["accent"],
 		["Text"] = getgenv().script_name or "marceline",
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, 50, 0, 19),
-		["Center"] = true,
-		["Size"] = 18,
+		["Position"] = udim2_new(0, 14, 0, 20),
+		["Center"] = false,
+		["Size"] = 26,
 		["Visible"] = true,
 		["Transparency"] = 1,
 	})
@@ -788,12 +788,12 @@ do
 
 	local watermark_frame = drawing_proxy["new"]("Image", {
 		["Position"] = udim2_new(0, 22, 0, 12),
-		["Size"] = udim2_new(0, 285, 0, 34),
+		["Size"] = udim2_new(0, 320, 0, 38),
 		["Color"] = color3_fromrgb(38, 38, 38),
-		["Rounding"] = 3,
+		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
 		["Transparency"] = 0,
-		["Visible"] = true,
+		["Visible"] = false,
 		["ZIndex"] = 10,
 	})
 
@@ -802,7 +802,7 @@ do
 		["Position"] = udim2_new(0, 1, 0, 1),
 		["Size"] = udim2_new(1, -2, 1, -2),
 		["Color"] = color3_fromrgb(16, 16, 16),
-		["Rounding"] = 3,
+		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
 		["Transparency"] = 1,
 		["Visible"] = true,
@@ -823,11 +823,11 @@ do
 	local watermark_title = drawing_proxy["new"]("Text", {
 		["Parent"] = watermark_inside,
 		["Text"] = getgenv().script_name or "marceline",
-		["Color"] = menu["colors"]["accent"],
+		["Color"] = color3_fromrgb(255, 255, 255),
 		["Font"] = 1,
-		["Size"] = 18,
+		["Size"] = 20,
 		["Center"] = true,
-		["Position"] = udim2_new(0.5, 0, 0, 8),
+		["Position"] = udim2_new(0.5, 0, 0, 7),
 		["Transparency"] = 1,
 		["Visible"] = true,
 		["ZIndex"] = 12,
@@ -835,8 +835,8 @@ do
 
 	local right_side = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, 101, 0, 0),
-		["Size"] = udim2_new(1, -101, 1, 0),
+		["Position"] = udim2_new(0, 196, 0, 0),
+		["Size"] = udim2_new(1, -196, 1, -35),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Filled"] = true,
@@ -845,8 +845,8 @@ do
 
 	local right_side_cover = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, 101, 0, 0),
-		["Size"] = udim2_new(1, -101, 1, 0),
+		["Position"] = udim2_new(0, 196, 0, 0),
+		["Size"] = udim2_new(1, -196, 1, -35),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Filled"] = true,
@@ -856,8 +856,8 @@ do
 
 	local right_side_divider = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, 100, 0, 0),
-		["Size"] = udim2_new(0, 1, 1, 0),
+		["Position"] = udim2_new(0, 195, 0, 0),
+		["Size"] = udim2_new(0, 1, 1, -35),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Thickness"] = 1,
@@ -865,12 +865,53 @@ do
 		["Transparency"] = 1,
 	})
 
+	-- > ( bottom bar - Milenium design )
+	local bottom_bar = drawing_proxy["new"]("Image", {
+		["Parent"] = inside,
+		["Position"] = udim2_new(0, 0, 1, -36),
+		["Size"] = udim2_new(1, 0, 0, 35),
+		["Color"] = color3_fromrgb(23, 23, 25),
+		["Rounding"] = 7,
+		["Data"] = pixel_image_data,
+		["Transparency"] = 1,
+		["Visible"] = true,
+	})
+	local bottom_bar_fill = drawing_proxy["new"]("Image", {
+		["Parent"] = inside,
+		["Position"] = udim2_new(0, 0, 1, -36),
+		["Size"] = udim2_new(1, 0, 0, 6),
+		["Color"] = color3_fromrgb(23, 23, 25),
+		["Data"] = pixel_image_data,
+		["Transparency"] = 1,
+		["Visible"] = true,
+	})
+	local bottom_bar_divider = drawing_proxy["new"]("Square", {
+		["Parent"] = inside,
+		["Position"] = udim2_new(0, 0, 1, -37),
+		["Size"] = udim2_new(1, 0, 0, 1),
+		["Color"] = color3_fromrgb(21, 21, 23),
+		["Filled"] = true,
+		["Transparency"] = 1,
+		["Visible"] = true,
+	})
+	local bottom_game_text = drawing_proxy["new"]("Text", {
+		["Parent"] = inside,
+		["Text"] = getgenv().game_name or ("Script for " .. (pcall(function() return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name end) and game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name or game.Name)),
+		["Color"] = color3_fromrgb(72, 72, 73),
+		["Font"] = 1,
+		["Size"] = 12,
+		["Position"] = udim2_new(0, 10, 1, -27),
+		["Transparency"] = 1,
+		["Visible"] = true,
+		["ZIndex"] = 2,
+	})
+
 	local search_image = drawing_proxy["new"]("Image", {
 		["Color"] = menu["colors"]["image"],
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAYAAAAAEAAABgAAAAAQAAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAADp1fY4ytpsegAAAGdJREFUKFONkGEWgCAIg5GTdP9LlqPBA8Pq+yFuOvA5JHFOuDXGhNvAjPVipgtZAFAGtIuvbrSdRA4sJQQBKB/wOM6V9TevAe+cn6su8liwaieSuwuONy4/k0PdZHglsKOEWD+5QyIX+wJP/y1yP3IAAAAASUVORK5CYII="
 		),
-		["Position"] = udim2_new(0, 27, 1, -27),
+		["Position"] = udim2_new(1, -65, 1, -24),
 		["Parent"] = inside,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
@@ -883,7 +924,7 @@ do
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAiF8BAOgDAACIXwEA6AMAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAAC1cWHl18YwawAAAH5JREFUKFOFkAsOgCAMQwE5lIfx/qeA4Do7ZCL6ErOWtHwMb7TWinyN1pE4Owxul5uJnAp2ljGFo0B5F1Zhw0p6JVxDfIZegQymtroRTK9wj0bYjl5QtTCGPkqHLGcXpFRQGtYqwhDuDU9YKhYGaQwjAGix0S7W/z0UAO0PIZyip02b2JexIAAAAABJRU5ErkJggg=="
 		),
-		["Position"] = udim2_new(0, 44, 1, -27),
+		["Position"] = udim2_new(1, -48, 1, -24),
 		["Parent"] = inside,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
@@ -895,7 +936,7 @@ do
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAMAAABhq6zVAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf///wAAAFXC034AAAACdFJOU/8A5bcwSgAAAAlwSFlzAAALEwAACxMBAJqcGAAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIDUuMS4y+7wDtgAAALZlWElmSUkqAAgAAAAFABoBBQABAAAASgAAABsBBQABAAAAUgAAACgBAwABAAAAAgAAADEBAgAQAAAAWgAAAGmHBAABAAAAagAAAAAAAABJGQEA6AMAAEkZAQDoAwAAUGFpbnQuTkVUIDUuMS4yAAMAAJAHAAQAAAAwMjMwAaADAAEAAAABAAAABaAEAAEAAACUAAAAAAAAAAIAAQACAAQAAABSOTgAAgAHAAQAAAAwMTAwAAAAAC/Sb/YZ+v7JAAAAMklEQVQYV1WLARIAQAQC9f9Pn65oNAZpFajyUHn0MtJZWkbdt+QxBwtA47X1kzDk9QY8FowASc0mZqAAAAAASUVORK5CYII="
 		),
-		["Position"] = udim2_new(0, 61, 1, -27),
+		["Position"] = udim2_new(1, -31, 1, -24),
 		["Parent"] = inside,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
@@ -914,8 +955,8 @@ do
 
 	local search_border = drawing_proxy["new"]("Image", {
 		["Parent"] = frame,
-		["Position"] = udim2_new(0, 11, 1, -32),
-		["Size"] = udim2_new(0, 78, 0, 20),
+		["Position"] = udim2_new(1, -155, 1, -55),
+		["Size"] = udim2_new(0, 100, 0, 20),
 		["Color"] = menu["colors"]["border"],
 		["Transparency"] = 1,
 		["Rounding"] = 4,
@@ -936,8 +977,8 @@ do
 
 	local search_out_border = drawing_proxy["new"]("Image", {
 		["Parent"] = frame,
-		["Position"] = udim2_new(0, 11, 1, -57),
-		["Size"] = udim2_new(0, 78, 0, 20),
+		["Position"] = udim2_new(1, -155, 1, -80),
+		["Size"] = udim2_new(0, 100, 0, 20),
 		["Color"] = menu["colors"]["border"],
 		["Transparency"] = 1,
 		["Rounding"] = 4,
@@ -972,9 +1013,9 @@ do
 
 	local drag_frame = drawing_proxy["new"]("Image", {
 		["Position"] = menu_position,
-		["Size"] = udim2_new(0, 575, 0, 450),
+		["Size"] = udim2_new(0, 620, 0, 470),
 		["Color"] = menu["colors"]["background"],
-		["Rounding"] = 4,
+		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
 		["Transparency"] = 0,
 		["ZIndex"] = 1000,
@@ -985,7 +1026,7 @@ do
 		["Position"] = udim2_new(0, 1, 0, 1),
 		["Size"] = udim2_new(1, -2, 1, -2),
 		["Color"] = menu["colors"]["section"],
-		["Rounding"] = 4,
+		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
 		["Transparency"] = 1,
 		["Parent"] = drag_frame,
@@ -4344,8 +4385,8 @@ do
 			end
 		end
 
-		local size = current_y_offset > 405 and udim2_new(0, 575, 0, 450 + (current_y_offset - 405))
-			or udim2_new(0, 575, 0, 450)
+		local size = current_y_offset > 425 and udim2_new(0, 620, 0, 470 + (current_y_offset - 425))
+			or udim2_new(0, 620, 0, 470)
 		drag_frame["Size"] = size
 		frame["Size"] = size
 	end
@@ -6631,7 +6672,7 @@ do
 			tab_line["Color"] = color
 			drag_logo["Color"] = color
 			watermark_line["Color"] = color
-			watermark_title["Color"] = color
+			watermark_title["Color"] = color3_fromrgb(255, 255, 255)
 			for name, group in menu["groups"] do
 				group["text"]["Color"] = color
 				group["line"]["Color"] = color
