@@ -869,7 +869,7 @@ do
 	local bottom_bar = drawing_proxy["new"]("Image", {
 		["Parent"] = inside,
 		["Position"] = udim2_new(0, 0, 1, -36),
-		["Size"] = udim2_new(1, 0, 0, 35),
+		["Size"] = udim2_new(1, 0, 0, 29),
 		["Color"] = color3_fromrgb(23, 23, 25),
 		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
