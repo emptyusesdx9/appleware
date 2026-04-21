@@ -498,8 +498,8 @@ do
 	)
 	local menu_width = 706
 	local menu_height = 509
-	local topbar_height = 41
-	local sidebar_width = 121
+	local topbar_height = 0
+	local sidebar_width = 140
 	local tab_content_padding = 12
 	local min_sidebar_layout_height = menu_height - 45
 	local menu_position =
@@ -779,7 +779,7 @@ do
 
 	do
 		local is_awp    = identifyexecutor() == "AWP"
-		local txt_y     = is_awp and 8 or 9
+		local txt_y     = is_awp and 6 or 7
 		local h_outer   = 31
 		local h_inner   = h_outer - 2
 		local pad_l     = 14    -- space after the accent bar
@@ -847,7 +847,7 @@ do
 		local wm_name = drawing_proxy["new"]("Text", {
 			["Color"]        = menu["colors"]["accent"],
 			["Text"]         = "marceline",
-			["Size"]         = 16,
+			["Size"]         = 13,
 			["Font"]         = 1,
 			["Transparency"] = 1,
 			["Visible"]      = true,
@@ -860,7 +860,7 @@ do
 		local wm_info = drawing_proxy["new"]("Text", {
 			["Color"]        = color3_fromrgb(255, 255, 255),
 			["Text"]         = "ver 1.0.7 | 0 fps | 00:00",
-			["Size"]         = 16,
+			["Size"]         = 13,
 			["Font"]         = 1,
 			["Transparency"] = 1,
 			["Visible"]      = true,
@@ -875,7 +875,7 @@ do
 			local name_w = wm_name["TextBounds"]["X"]
 			local info_w = wm_info["TextBounds"]["X"]
 			local info_x = pad_l + name_w + gap
-			local total  = math.max(bar_w + info_x + info_w + pad_r + 2, 257)
+			local total  = bar_w + info_x + info_w + pad_r
 			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h_outer)
 			wm_inside["Size"] = udim2_new(0, total,     0, h_inner)
 			wm_info["Position"] = udim2_new(0, info_x, 0, txt_y)
@@ -976,7 +976,7 @@ do
 		["Color"] = menu["colors"]["section"],
 		["Filled"] = true,
 		["Transparency"] = 1,
-		["Visible"] = true,
+		["Visible"] = false,
 	})
 
 	local top_title = drawing_proxy["new"]("Text", {
@@ -987,7 +987,7 @@ do
 		["Font"] = 1,
 		["Color"] = color3_fromrgb(235, 235, 235),
 		["Transparency"] = 1,
-		["Visible"] = true,
+		["Visible"] = false,
 	})
 
 	local top_close = drawing_proxy["new"]("Text", {
@@ -998,7 +998,7 @@ do
 		["Font"] = 1,
 		["Color"] = color3_fromrgb(220, 220, 220),
 		["Transparency"] = 1,
-		["Visible"] = true,
+		["Visible"] = false,
 	})
 
 	local top_close_hitbox = drawing_proxy["new"]("Square", {
@@ -1007,7 +1007,7 @@ do
 		["Size"] = udim2_new(0, 30, 0, 30),
 		["Filled"] = true,
 		["Transparency"] = 0,
-		["Visible"] = true,
+		["Visible"] = false,
 	})
 
 	local bottom_bar = drawing_proxy["new"]("Square", {
@@ -1017,7 +1017,7 @@ do
 		["Color"] = menu["colors"]["section"],
 		["Filled"] = true,
 		["Transparency"] = 1,
-		["Visible"] = true,
+		["Visible"] = false,
 	})
 
 	local search_image = drawing_proxy["new"]("Image", {
@@ -1025,8 +1025,8 @@ do
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAYAAAAAEAAABgAAAAAQAAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAADp1fY4ytpsegAAAGdJREFUKFONkGEWgCAIg5GTdP9LlqPBA8Pq+yFuOvA5JHFOuDXGhNvAjPVipgtZAFAGtIuvbrSdRA4sJQQBKB/wOM6V9TevAe+cn6su8liwaieSuwuONy4/k0PdZHglsKOEWD+5QyIX+wJP/y1yP3IAAAAASUVORK5CYII="
 		),
-		["Position"] = udim2_new(0, 27, 0, 12),
-		["Parent"] = bottom_bar,
+		["Position"] = udim2_new(0, 27, 1, -27),
+		["Parent"] = inside,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
 		["ZIndex"] = 999,
@@ -1038,8 +1038,8 @@ do
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdYAAA3WAZBveZwAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAiF8BAOgDAACIXwEA6AMAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAAC1cWHl18YwawAAAH5JREFUKFOFkAsOgCAMQwE5lIfx/qeA4Do7ZCL6ErOWtHwMb7TWinyN1pE4Owxul5uJnAp2ljGFo0B5F1Zhw0p6JVxDfIZegQymtroRTK9wj0bYjl5QtTCGPkqHLGcXpFRQGtYqwhDuDU9YKhYGaQwjAGix0S7W/z0UAO0PIZyip02b2JexIAAAAABJRU5ErkJggg=="
 		),
-		["Position"] = udim2_new(0, 44, 0, 12),
-		["Parent"] = bottom_bar,
+		["Position"] = udim2_new(0, 44, 1, -27),
+		["Parent"] = inside,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
 		["Visible"] = true,
@@ -1050,8 +1050,8 @@ do
 		["Data"] = base64_decode(
 			"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAMAAABhq6zVAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf///wAAAFXC034AAAACdFJOU/8A5bcwSgAAAAlwSFlzAAALEwAACxMBAJqcGAAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIDUuMS4y+7wDtgAAALZlWElmSUkqAAgAAAAFABoBBQABAAAASgAAABsBBQABAAAAUgAAACgBAwABAAAAAgAAADEBAgAQAAAAWgAAAGmHBAABAAAAagAAAAAAAABJGQEA6AMAAEkZAQDoAwAAUGFpbnQuTkVUIDUuMS4yAAMAAJAHAAQAAAAwMjMwAaADAAEAAAABAAAABaAEAAEAAACUAAAAAAAAAAIAAQACAAQAAABSOTgAAgAHAAQAAAAwMTAwAAAAAC/Sb/YZ+v7JAAAAMklEQVQYV1WLARIAQAQC9f9Pn65oNAZpFajyUHn0MtJZWkbdt+QxBwtA47X1kzDk9QY8FowASc0mZqAAAAAASUVORK5CYII="
 		),
-		["Position"] = udim2_new(0, 61, 0, 12),
-		["Parent"] = bottom_bar,
+		["Position"] = udim2_new(0, 61, 1, -27),
+		["Parent"] = inside,
 		["Size"] = udim2_new(0, 12, 0, 12),
 		["Transparency"] = 1,
 		["Visible"] = true,
@@ -4225,10 +4225,6 @@ do
 		tween(frame, transparency, exponential, out, 0.18)
 		tween(inside, transparency, exponential, out, 0.18)
 		tween(juju_text, transparency, exponential, out, 0.18)
-		tween(top_bar, transparency, exponential, out, 0.18)
-		tween(bottom_bar, transparency, exponential, out, 0.18)
-		tween(top_title, transparency, exponential, out, 0.18)
-		tween(top_close, transparency, exponential, out, 0.18)
 		tween(right_side, transparency, exponential, out, 0.18)
 		tween(right_side_divider, transparency, exponential, out, 0.18)
 		tween(search_image, transparency, exponential, out, 0.18)
@@ -4505,7 +4501,8 @@ do
 					if tab_text_frame then
 						tab_text_frame["Position"] = new_tab_position
 						if tab_text then
-							tab_text_frame["Size"] = udim2_new(0, 70, 0, tab_text["TextBounds"]["Y"])
+							local tab_hitbox_width = clamp(tab_text["TextBounds"]["X"] + 10, 90, sidebar_width - 18)
+							tab_text_frame["Size"] = udim2_new(0, tab_hitbox_width, 0, tab_text["TextBounds"]["Y"] + 2)
 						end
 					end
 				end
@@ -4592,7 +4589,7 @@ do
 		local new_tab = {
 			["text"] = drawing_proxy["new"]("Text", {
 				["Color"] = menu["colors"]["inactive_text"],
-				["Text"] = name:sub(1, 12),
+				["Text"] = name,
 				["Size"] = 14,
 				["Font"] = 1,
 				["Visible"] = is_group_visible,
@@ -4632,7 +4629,7 @@ do
 		local text_frame = drawing_proxy["new"]("Square", {
 			["Parent"] = inside,
 			["Position"] = position,
-			["Size"] = udim2_new(0, 70, 0, text["TextBounds"]["Y"]),
+			["Size"] = udim2_new(0, clamp(text["TextBounds"]["X"] + 10, 90, sidebar_width - 18), 0, text["TextBounds"]["Y"] + 2),
 			["Filled"] = true,
 			["Transparency"] = 0,
 			["Visible"] = is_group_visible,
@@ -8200,8 +8197,6 @@ do
 				function(color)
 					menu["colors"]["section"] = color
 					inside["Color"] = color
-					top_bar["Color"] = color
-					bottom_bar["Color"] = color
 
 					for name, group in menu["groups"] do
 						for name, tab in group["tabs"] do
@@ -8650,18 +8645,6 @@ do
 		end)
 
 		create_click_connection(frame, search_image, start_search)
-
-		create_click_connection(frame, top_close_hitbox, function()
-			if menu_open then
-				pop_menu()
-			end
-		end)
-
-		create_hover_connection(frame, top_close_hitbox, function()
-			tween(top_close, { Color = menu["colors"]["accent"] }, circular, out, 0.12)
-		end, function()
-			tween(top_close, { Color = color3_fromrgb(220, 220, 220) }, circular, out, 0.12)
-		end)
 
 		-- >> ( configs )
 
