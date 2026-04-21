@@ -24,7 +24,7 @@ end
 
 -- > ( global cheat variables )
 
-local file_path = getgenv().custom_folder or "appleware"
+local file_path = getgenv().custom_folder or "juju recode"
 local user_input_service = cloneref(game:GetService("UserInputService"))
 local get_mouse_location = user_input_service["GetMouseLocation"]
 local players_service = cloneref(game:GetService("Players"))
@@ -73,8 +73,7 @@ local connections = {}
 local addon_data = {}
 local heartbeat = {}
 local flags = {
-	["keybinds_position"]  = { 15, camera["ViewportSize"]["Y"] / 2 - 10 },
-	["watermark_position"] = { camera["ViewportSize"]["X"] / 2 - 50, 12 },
+	["keybinds_position"] = { 15, camera["ViewportSize"]["Y"] / 2 - 10 },
 	["loaded_addons"] = {},
 	["favorites"] = {},
 }
@@ -282,31 +281,31 @@ local menu = {
 	on_config_loaded = signal["new"](),
 	accent = color3_fromrgb(178, 58, 104),
 	colors = {
-		["shadow"]        = color3_fromrgb(209, 23, 23),
-		["accent"]        = color3_fromrgb(178, 58, 104),
-		["active_text"]   = color3_fromrgb(220, 220, 220),
-		["keybind_text"]  = color3_fromrgb(185, 185, 185),
-		["border"]        = color3_fromrgb(8, 8, 8),
-		["inactive_text"] = color3_fromrgb(100, 100, 100),
-		["highlighted"]   = color3_fromrgb(30, 20, 20),
-		["dark_text"]     = color3_fromrgb(146, 146, 146),
-		["image"]         = color3_fromrgb(192, 192, 192),
-		["section"]       = color3_fromrgb(21, 21, 21),
-		["background"]    = color3_fromrgb(16, 16, 16),
-		["success"]       = color3_fromrgb(138, 253, 128),
-		["error"]         = color3_fromrgb(155, 45, 45),
-		["alert"]         = color3_fromrgb(60, 30, 20),
-		["logo"]          = color3_fromrgb(255, 255, 255),
-		["juju"]          = color3_fromrgb(165, 43, 43),
-		["build"]         = color3_fromrgb(165, 43, 43),
-		["cursor"]        = color3_fromrgb(128, 128, 128),
+		["shadow"] = color3_fromrgb(154, 213, 222),
+		["accent"] = color3_fromrgb(154, 213, 222),
+		["active_text"] = color3_fromrgb(197, 197, 197),
+		["keybind_text"] = color3_fromrgb(197, 197, 197),
+		["border"] = color3_fromrgb(24, 25, 24),
+		["inactive_text"] = color3_fromrgb(75, 72, 72),
+		["highlighted"] = color3_fromrgb(51, 65, 70),
+		["dark_text"] = color3_fromrgb(70, 85, 87),
+		["image"] = color3_fromrgb(89, 89, 89),
+		["section"] = color3_fromrgb(6, 6, 6),
+		["background"] = color3_fromrgb(0, 0, 0),
+		["success"] = color3_fromrgb(154, 213, 222),
+		["error"] = color3_fromrgb(39, 60, 96),
+		["alert"] = color3_fromrgb(30, 51, 61),
+		["logo"] = color3_fromrgb(154, 213, 222),
+		["juju"] = color3_fromrgb(154, 213, 222),
+		["build"] = color3_fromrgb(154, 213, 222),
+		["cursor"] = color3_fromrgb(154, 213, 222),
 	},
 	settings = {},
 	notifications = {},
 	groups = {},
 	favorites = {},
 	autoload = nil,
-	initial_base_offset = 64,
+	initial_base_offset = 75,
 	ordered_groups = {},
 	theme = "",
 }
@@ -356,7 +355,7 @@ do
 				["jaydes.png"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/jaydes.png"),
 				["1.png"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/1.png"),
 				["2.png"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/2.png"),
-				["logo.png"] = safeHttp("https://raw.githubusercontent.com/emptyusesdx9/appleware/main/utility/logo.png"),
+				["logo.png"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/logo.png"),
 				["saturation.png"] = safeHttp(
 					"https://raw.githubusercontent.com/panduh16/juju/main/assets/saturation.png"
 				),
@@ -390,7 +389,7 @@ do
 				["spam.json"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/spam.json"),
 			},
 			["themes"] = {
-				["theme.th"] = safeHttp("https://raw.githubusercontent.com/emptyusesdx9/appleware/refs/heads/main/utility/themes/theme.th"),
+				["default.th"] = safeHttp("https://raw.githubusercontent.com/panduh16/juju/main/assets/default.th"),
 			},
 			["addons"] = {},
 			["configs"] = {},
@@ -496,14 +495,8 @@ do
 	local cog_image_data = base64_decode(
 		"iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf///wAAAFXC034AAAACdFJOU/8A5bcwSgAAAAlwSFlzAAAQKAAAECgBJz8A6wAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIDUuMS4y+7wDtgAAALZlWElmSUkqAAgAAAAFABoBBQABAAAASgAAABsBBQABAAAAUgAAACgBAwABAAAAAgAAADEBAgAQAAAAWgAAAGmHBAABAAAAagAAAAAAAAB3mgEA6AMAAHeaAQDoAwAAUGFpbnQuTkVUIDUuMS4yAAMAAJAHAAQAAAAwMjMwAaADAAEAAAABAAAABaAEAAEAAACUAAAAAAAAAAIAAQACAAQAAABSOTgAAgAHAAQAAAAwMTAwAAAAAEyPNqYn0aVIAAAALElEQVQYV2NgBAIGCAmioQhIQACQCZaGYBAJoZGYSApgUhATYAiikJGRkREACr4AMZ+SUSoAAAAASUVORK5CYII="
 	)
-	local menu_width = 706
-	local menu_height = 509
-	local topbar_height = 0
-	local sidebar_width = 140
-	local tab_content_padding = 12
-	local min_sidebar_layout_height = menu_height - 45
 	local menu_position =
-		udim2_new(0, camera["ViewportSize"]["X"] / 2 - menu_width / 2, 0, camera["ViewportSize"]["Y"] / 2 - menu_height * 0.5)
+		udim2_new(0, camera["ViewportSize"]["X"] / 2 - 575 / 2, 0, camera["ViewportSize"]["Y"] / 2 - 450 * 0.5)
 
 	local half_transparency = { Transparency = 0.5 }
 	local stop_panel_search = nil
@@ -517,9 +510,6 @@ do
 	local old_text = ""
 	local searching = nil
 	local hud_frames = {}
-	local wm_line = nil
-	local wm_name_ref = nil
-	local wm_info_ref = nil
 
 	local actives = {
 		["colorpicker"] = nil,
@@ -744,7 +734,7 @@ do
 
 	local frame = drawing_proxy["new"]("Image", {
 		["Position"] = menu_position,
-		["Size"] = udim2_new(0, menu_width, 0, menu_height),
+		["Size"] = udim2_new(0, 575, 0, 450),
 		["Color"] = menu["colors"]["background"],
 		["Rounding"] = 4,
 		["Data"] = pixel_image_data,
@@ -763,184 +753,90 @@ do
 		["Visible"] = false,
 	})
 
-	-- script name label (top-left of sidebar, no logo)
+	local logo = drawing_proxy["new"]("Image", {
+		["Color"] = menu["colors"]["accent"],
+		["Data"] = pixel_image_data,
+		["Position"] = udim2_new(0, 0, 0, 0),
+		["Parent"] = inside,
+		["Size"] = udim2_new(0, 1, 0, 1),
+		["Visible"] = false,
+		["Transparency"] = 0,
+	})
+
 	local juju_text = drawing_proxy["new"]("Text", {
-		["Font"]         = 1,
-		["Color"]        = color3_fromrgb(255, 255, 255),
-		["Text"]         = getgenv().script_name or "marceline",
-		["Parent"]       = inside,
-		["Position"]     = udim2_new(0, 15, 0, 18),
-		["Size"]         = 14,
-		["Visible"]      = true,
+		["Font"] = 1,
+		["Color"] = color3_fromrgb(255, 255, 255),
+		["Text"] = getgenv().script_name or "marceline",
+		["Parent"] = inside,
+		["Position"] = udim2_new(0, 50, 0, 19),
+		["Center"] = true,
+		["Size"] = 18,
+		["Visible"] = true,
 		["Transparency"] = 1,
 	})
 
-	-- > ( watermark )
+	local build_text = drawing_proxy["new"]("Text", {
+		["Font"] = 1,
+		["Color"] = menu["colors"]["accent"],
+		["Text"] = "",
+		["Parent"] = inside,
+		["Position"] = udim2_new(0, 0, 0, 0),
+		["Size"] = 12,
+		["Visible"] = false,
+		["Transparency"] = 0,
+	})
 
-	do
-		local is_awp    = identifyexecutor() == "AWP"
-		local txt_y     = is_awp and 6 or 7
-		local h_outer   = 31
-		local h_inner   = h_outer - 2
-		local pad_l     = 14    -- space after the accent bar
-		local pad_r     = 10   -- right padding
-		local gap       = 7    -- gap between name and info text
-		local bar_w     = 2    -- left accent bar width
+	local watermark_frame = drawing_proxy["new"]("Image", {
+		["Position"] = udim2_new(0, 22, 0, 12),
+		["Size"] = udim2_new(0, 285, 0, 34),
+		["Color"] = color3_fromrgb(38, 38, 38),
+		["Rounding"] = 3,
+		["Data"] = pixel_image_data,
+		["Transparency"] = 0,
+		["Visible"] = true,
+		["ZIndex"] = 10,
+	})
 
-		local wm_init_x = flags["watermark_position"][1]
-		local wm_init_y = flags["watermark_position"][2]
+	local watermark_inside = drawing_proxy["new"]("Image", {
+		["Parent"] = watermark_frame,
+		["Position"] = udim2_new(0, 1, 0, 1),
+		["Size"] = udim2_new(1, -2, 1, -2),
+		["Color"] = color3_fromrgb(16, 16, 16),
+		["Rounding"] = 3,
+		["Data"] = pixel_image_data,
+		["Transparency"] = 1,
+		["Visible"] = true,
+		["ZIndex"] = 11,
+	})
 
-		-- outer border frame
-		local wm_frame = drawing_proxy["new"]("Image", {
-			["Position"]     = udim2_new(0, wm_init_x, 0, wm_init_y),
-			["Size"]         = udim2_new(0, 10, 0, h_outer),
-			["Color"]        = color3_fromrgb(38, 38, 38),
-			["Transparency"] = 0,
-			["Rounding"]     = 3,
-			["Data"]         = pixel_image_data,
-			["ZIndex"]       = 10,
-			["Visible"]      = true,
-		})
+	local watermark_line = drawing_proxy["new"]("Square", {
+		["Parent"] = watermark_inside,
+		["Position"] = udim2_new(0, 0, 0, 0),
+		["Size"] = udim2_new(0, 2, 1, 0),
+		["Color"] = menu["colors"]["accent"],
+		["Filled"] = true,
+		["Transparency"] = 0,
+		["Visible"] = true,
+		["ZIndex"] = 12,
+	})
 
-		hud_frames["watermark_position"] = wm_frame
-
-		-- shadow
-		local wm_shadow = drawing_proxy["new"]("Image", {
-			["Parent"]       = wm_frame,
-			["Data"]         = shadow_image_data,
-			["Rounding"]     = 7,
-			["Color"]        = menu["colors"]["shadow"],
-			["Transparency"] = 0.16,
-			["Size"]         = udim2_new(1, 8, 1, 6),
-			["ZIndex"]       = 9,
-			["Visible"]      = true,
-			["Position"]     = udim2_new(0, -4, 0, -3),
-		})
-
-		-- dark inner fill
-		local wm_inside = drawing_proxy["new"]("Image", {
-			["Position"]     = udim2_new(0, 1, 0, 1),
-			["Size"]         = udim2_new(0, 10, 0, h_inner),
-			["Color"]        = color3_fromrgb(16, 16, 16),
-			["Transparency"] = 1,
-			["Rounding"]     = 3,
-			["Data"]         = pixel_image_data,
-			["Parent"]       = wm_frame,
-			["ZIndex"]       = 11,
-			["Visible"]      = true,
-		})
-
-		-- left accent bar (covers full inner height)
-		local wm_bar = drawing_proxy["new"]("Square", {
-			["Parent"]       = wm_inside,
-			["Position"]     = udim2_new(0, 0, 0, 0),
-			["Size"]         = udim2_new(0, bar_w, 1, 0),
-			["Color"]        = menu["colors"]["accent"],
-			["Filled"]       = true,
-			["Transparency"] = 0,
-			["ZIndex"]       = 12,
-			["Visible"]      = true,
-		})
-		wm_line = wm_bar
-
-		-- "marceline" in accent color
-		local wm_name = drawing_proxy["new"]("Text", {
-			["Color"]        = menu["colors"]["accent"],
-			["Text"]         = "marceline",
-			["Size"]         = 13,
-			["Font"]         = 1,
-			["Transparency"] = 1,
-			["Visible"]      = true,
-			["Parent"]       = wm_inside,
-			["Position"]     = udim2_new(0, pad_l, 0, txt_y),
-			["ZIndex"]       = 12,
-		})
-		wm_name_ref = wm_name
-
-		local wm_info = drawing_proxy["new"]("Text", {
-			["Color"]        = color3_fromrgb(255, 255, 255),
-			["Text"]         = "ver 1.0.7 | 0 fps | 00:00",
-			["Size"]         = 13,
-			["Font"]         = 1,
-			["Transparency"] = 1,
-			["Visible"]      = true,
-			["Parent"]       = wm_inside,
-			["Position"]     = udim2_new(0, pad_l + 60, 0, txt_y),
-			["ZIndex"]       = 12,
-		})
-		wm_info_ref = wm_info
-
-		-- auto-resize: total width = bar + padL + nameW + gap + infoW + padR
-		local function refresh_wm_size()
-			local name_w = wm_name["TextBounds"]["X"]
-			local info_w = wm_info["TextBounds"]["X"]
-			local info_x = pad_l + name_w + gap
-			local total  = bar_w + info_x + info_w + pad_r
-			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h_outer)
-			wm_inside["Size"] = udim2_new(0, total,     0, h_inner)
-			wm_info["Position"] = udim2_new(0, info_x, 0, txt_y)
-			local sw = floor((total + 2) / 11)
-			wm_shadow["Size"]     = udim2_new(1, sw, 1, 6)
-			wm_shadow["Position"] = udim2_new(0, -sw / 2, 0, -3)
-		end
-
-		refresh_wm_size()
-
-		local wm_custom_text = nil
-		local wm_tick_accum = 0
-		local wm_version = tostring(getgenv().script_version or "1.0.7")
-
-		heartbeat[#heartbeat + 1] = function(dt)
-			wm_tick_accum = wm_tick_accum + dt
-			if wm_tick_accum < 0.25 then
-				return
-			end
-
-			wm_tick_accum = 0
-			local fps = floor(1 / clamp(dt, 1 / 1000, 1))
-			local now = os.date("%H:%M")
-			wm_info["Text"] = ("ver %s | %d fps | %s"):format(wm_version, fps, now)
-			refresh_wm_size()
-		end
-
-		-- public api
-		menu["refresh_watermark_size"] = refresh_wm_size
-		menu["set_watermark_text"] = function(text)
-			local cleaned = (text and tostring(text):gsub("^%s+", ""):gsub("%s+$", "")) or ""
-			wm_custom_text = cleaned ~= "" and cleaned or nil
-			wm_name["Text"] = wm_custom_text or (getgenv().script_name or "marceline")
-			refresh_wm_size()
-		end
-
-		menu["show_watermark"] = function()
-			wm_frame["Visible"] = true
-			tween(wm_frame,  { Transparency = 0.7  }, circular, out, 0.15)
-			tween(wm_inside, show_transparency,       circular, out, 0.15)
-			tween(wm_shadow, { Transparency = 0.16 }, circular, out, 0.15)
-			tween(wm_name,   show_transparency,       circular, out, 0.15)
-			tween(wm_info,   show_transparency,       circular, out, 0.15)
-			flags["!watermark_visible"] = true
-		end
-
-		menu["hide_watermark"] = function()
-			tween(wm_frame,  hide_transparency, circular, out, 0.15)
-			tween(wm_inside, hide_transparency, circular, out, 0.15)
-			tween(wm_shadow, hide_transparency, circular, out, 0.15)
-			tween(wm_name,   hide_transparency, circular, out, 0.15)
-			tween(wm_info,   hide_transparency, circular, out, 0.15)
-			flags["!watermark_visible"] = false
-			delay(0.15, function()
-				if not flags["!watermark_visible"] then
-					wm_frame["Visible"] = false
-				end
-			end)
-		end
-	end
+	local watermark_title = drawing_proxy["new"]("Text", {
+		["Parent"] = watermark_inside,
+		["Text"] = getgenv().script_name or "marceline",
+		["Color"] = menu["colors"]["accent"],
+		["Font"] = 1,
+		["Size"] = 18,
+		["Center"] = true,
+		["Position"] = udim2_new(0.5, 0, 0, 8),
+		["Transparency"] = 1,
+		["Visible"] = true,
+		["ZIndex"] = 12,
+	})
 
 	local right_side = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, sidebar_width, 0, topbar_height),
-		["Size"] = udim2_new(1, -sidebar_width, 1, -topbar_height),
+		["Position"] = udim2_new(0, 101, 0, 0),
+		["Size"] = udim2_new(1, -101, 1, 0),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Filled"] = true,
@@ -949,8 +845,8 @@ do
 
 	local right_side_cover = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, sidebar_width, 0, topbar_height),
-		["Size"] = udim2_new(1, -sidebar_width, 1, -topbar_height),
+		["Position"] = udim2_new(0, 101, 0, 0),
+		["Size"] = udim2_new(1, -101, 1, 0),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Filled"] = true,
@@ -960,64 +856,13 @@ do
 
 	local right_side_divider = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, sidebar_width - 1, 0, topbar_height),
-		["Size"] = udim2_new(0, 1, 1, -topbar_height),
+		["Position"] = udim2_new(0, 100, 0, 0),
+		["Size"] = udim2_new(0, 1, 1, 0),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Thickness"] = 1,
 		["Filled"] = true,
 		["Transparency"] = 1,
-	})
-
-	local top_bar = drawing_proxy["new"]("Square", {
-		["Parent"] = inside,
-		["Position"] = udim2_new(0, 0, 0, 0),
-		["Size"] = udim2_new(1, 0, 0, topbar_height),
-		["Color"] = menu["colors"]["section"],
-		["Filled"] = true,
-		["Transparency"] = 1,
-		["Visible"] = false,
-	})
-
-	local top_title = drawing_proxy["new"]("Text", {
-		["Parent"] = top_bar,
-		["Position"] = udim2_new(0, 16, 0, identifyexecutor() == "AWP" and 11 or 10),
-		["Text"] = getgenv().script_name or "marceline",
-		["Size"] = 16,
-		["Font"] = 1,
-		["Color"] = color3_fromrgb(235, 235, 235),
-		["Transparency"] = 1,
-		["Visible"] = false,
-	})
-
-	local top_close = drawing_proxy["new"]("Text", {
-		["Parent"] = top_bar,
-		["Position"] = udim2_new(1, -28, 0, identifyexecutor() == "AWP" and 11 or 10),
-		["Text"] = "×",
-		["Size"] = 17,
-		["Font"] = 1,
-		["Color"] = color3_fromrgb(220, 220, 220),
-		["Transparency"] = 1,
-		["Visible"] = false,
-	})
-
-	local top_close_hitbox = drawing_proxy["new"]("Square", {
-		["Parent"] = top_bar,
-		["Position"] = udim2_new(1, -40, 0, 5),
-		["Size"] = udim2_new(0, 30, 0, 30),
-		["Filled"] = true,
-		["Transparency"] = 0,
-		["Visible"] = false,
-	})
-
-	local bottom_bar = drawing_proxy["new"]("Square", {
-		["Parent"] = inside,
-		["Position"] = udim2_new(0, 0, 1, -36),
-		["Size"] = udim2_new(0, sidebar_width, 0, 36),
-		["Color"] = menu["colors"]["section"],
-		["Filled"] = true,
-		["Transparency"] = 1,
-		["Visible"] = false,
 	})
 
 	local search_image = drawing_proxy["new"]("Image", {
@@ -1127,7 +972,7 @@ do
 
 	local drag_frame = drawing_proxy["new"]("Image", {
 		["Position"] = menu_position,
-		["Size"] = udim2_new(0, menu_width, 0, menu_height),
+		["Size"] = udim2_new(0, 575, 0, 450),
 		["Color"] = menu["colors"]["background"],
 		["Rounding"] = 4,
 		["Data"] = pixel_image_data,
@@ -3818,7 +3663,7 @@ do
 							local new_position_y = fake_hud_position["Y"] - (mouse_position_y - new_mouse_position["Y"])
 							local new_position = udim2_new(0, new_position_x, 0, new_position_y)
 
-							frame["Position"] = new_position
+							list_frame["Position"] = new_position
 							flags[flag] = { new_position_x, new_position_y }
 						end)
 
@@ -4224,7 +4069,9 @@ do
 
 		tween(frame, transparency, exponential, out, 0.18)
 		tween(inside, transparency, exponential, out, 0.18)
+		tween(logo, transparency, exponential, out, 0.18)
 		tween(juju_text, transparency, exponential, out, 0.18)
+		tween(build_text, transparency, exponential, out, 0.18)
 		tween(right_side, transparency, exponential, out, 0.18)
 		tween(right_side_divider, transparency, exponential, out, 0.18)
 		tween(search_image, transparency, exponential, out, 0.18)
@@ -4378,13 +4225,7 @@ do
 		tween(right_side_cover, show_transparency, circular, out, 0.15)
 
 		if actives["old_tab"] then
-			tween(
-				actives["old_tab"]["frame"],
-				{ ["tween_position"] = udim2_new(0, tab_content_padding, 0, tab_content_padding + 10) },
-				circular,
-				out,
-				0.15
-			)
+			tween(actives["old_tab"]["frame"], { ["tween_position"] = udim2_new(0, 10, 0, 20) }, circular, out, 0.15)
 			tween(
 				actives["old_tab"]["text"],
 				{ ["Color"] = menu["colors"]["inactive_text"], ["tween_position"] = actives["old_tab"]["position"] },
@@ -4425,14 +4266,8 @@ do
 
 				local new_frame = tab["frame"]
 				new_frame["Visible"] = true
-				new_frame["Position"] = udim2_new(0, tab_content_padding, 0, tab_content_padding + 10)
-				tween(
-					new_frame,
-					{ ["tween_position"] = udim2_new(0, tab_content_padding, 0, tab_content_padding) },
-					circular,
-					out,
-					0.15
-				)
+				new_frame["Position"] = udim2_new(0, 10, 0, 20)
+				tween(new_frame, { ["tween_position"] = udim2_new(0, 10, 0, 10) }, circular, out, 0.15)
 			elseif actives["old_tab"] and actives["tab"] ~= actives["old_tab"] then
 				actives["old_tab"]["frame"]["Visible"] = false
 			end
@@ -4440,8 +4275,8 @@ do
 		actives["tab"] = tab
 	end
 
-	local group_header_height = 38
-	local tab_vertical_step = 20
+	local group_header_height = 30
+	local tab_vertical_step = 15
 
 	function menu.update_layout()
 		local current_y_offset = menu["initial_base_offset"]
@@ -4479,30 +4314,29 @@ do
 
 			if should_be_visible then
 				if group_text then
-					group_text["Position"] = udim2_new(0, 14, 0, current_y_offset)
+					group_text["Position"] = udim2_new(0, 15, 0, current_y_offset)
 				end
 				if group_line then
-					group_line["Position"] = udim2_new(0, 14, 0, current_y_offset + 17)
+					group_line["Position"] = udim2_new(0, 15, 0, current_y_offset + 15)
 				end
 
-				local base_tab_y = current_y_offset + 24
+				local base_tab_y = current_y_offset + 20
 				for tab_index = 1, num_tabs do
 					local tab = ordered_tabs[tab_index]
 					local tab_text = tab["text"]
 					local tab_text_frame = tab["text_frame"]
 					local new_tab_y = base_tab_y + (tab_index - 1) * tab_vertical_step
-					local new_tab_position = udim2_new(0, 14, 0, new_tab_y)
+					local new_tab_position = udim2_new(0, 15, 0, new_tab_y)
 
 					tab["position"] = new_tab_position
 					if tab_text then
-						tab_text["Position"] = actives["tab"] == tab and udim2_new(0, 21, 0, new_tab_y)
+						tab_text["Position"] = actives["tab"] == tab and udim2_new(0, 20, 0, new_tab_y)
 							or new_tab_position
 					end
 					if tab_text_frame then
 						tab_text_frame["Position"] = new_tab_position
 						if tab_text then
-							local tab_hitbox_width = clamp(tab_text["TextBounds"]["X"] + 10, 90, sidebar_width - 18)
-							tab_text_frame["Size"] = udim2_new(0, tab_hitbox_width, 0, tab_text["TextBounds"]["Y"] + 2)
+							tab_text_frame["Size"] = udim2_new(0, 70, 0, tab_text["TextBounds"]["Y"])
 						end
 					end
 				end
@@ -4510,8 +4344,8 @@ do
 			end
 		end
 
-		local size = current_y_offset > min_sidebar_layout_height and udim2_new(0, menu_width, 0, menu_height + (current_y_offset - min_sidebar_layout_height))
-			or udim2_new(0, menu_width, 0, menu_height)
+		local size = current_y_offset > 405 and udim2_new(0, 575, 0, 450 + (current_y_offset - 405))
+			or udim2_new(0, 575, 0, 450)
 		drag_frame["Size"] = size
 		frame["Size"] = size
 	end
@@ -4557,16 +4391,16 @@ do
 				["Transparency"] = 0.5,
 				["Text"] = name,
 				["Parent"] = inside,
-				["Size"] = 16,
+				["Size"] = 14,
 				["Font"] = 1,
-				["Position"] = udim2_new(0, 14, 0, initial_offset),
+				["Position"] = udim2_new(0, 15, 0, initial_offset),
 				["Visible"] = true,
 			}),
 			["line"] = drawing_proxy["new"]("Square", {
 				["Parent"] = inside,
 				["Transparency"] = 0.5,
-				["Position"] = udim2_new(0, 14, 0, initial_offset + 17),
-				["Size"] = udim2_new(0, 72, 0, 1),
+				["Position"] = udim2_new(0, 15, 0, initial_offset + 15),
+				["Size"] = udim2_new(0, 70, 0, 1),
 				["Color"] = menu["colors"]["accent"],
 				["Filled"] = true,
 				["Visible"] = true,
@@ -4583,14 +4417,14 @@ do
 		local group_initial_offset = self["initial_offset"]
 		local ordered_tabs = self["ordered_tabs"]
 		local index = #ordered_tabs + 1
-		local position = udim2_new(0, 14, 0, group_initial_offset + 24 + (index - 1) * tab_vertical_step)
+		local position = udim2_new(0, 15, 0, group_initial_offset + 20 + (index - 1) * tab_vertical_step)
 		local is_group_visible = self["is_visible"]
 
 		local new_tab = {
 			["text"] = drawing_proxy["new"]("Text", {
 				["Color"] = menu["colors"]["inactive_text"],
-				["Text"] = name,
-				["Size"] = 14,
+				["Text"] = name:sub(1, 12),
+				["Size"] = 12,
 				["Font"] = 1,
 				["Visible"] = is_group_visible,
 				["Parent"] = inside,
@@ -4598,8 +4432,8 @@ do
 			}),
 			["frame"] = drawing_proxy["new"]("Square", {
 				["Parent"] = right_side,
-				["Position"] = udim2_new(0, tab_content_padding, 0, tab_content_padding),
-				["Size"] = udim2_new(1, -(tab_content_padding * 2), 1, -(tab_content_padding * 2)),
+				["Position"] = udim2_new(0, 10, 0, 10),
+				["Size"] = udim2_new(1, -20, 1, -20),
 				["Filled"] = true,
 				["Transparency"] = 0,
 				["Visible"] = false,
@@ -4629,7 +4463,7 @@ do
 		local text_frame = drawing_proxy["new"]("Square", {
 			["Parent"] = inside,
 			["Position"] = position,
-			["Size"] = udim2_new(0, clamp(text["TextBounds"]["X"] + 10, 90, sidebar_width - 18), 0, text["TextBounds"]["Y"] + 2),
+			["Size"] = udim2_new(0, 70, 0, text["TextBounds"]["Y"]),
 			["Filled"] = true,
 			["Transparency"] = 0,
 			["Visible"] = is_group_visible,
@@ -4946,14 +4780,14 @@ do
 			["Transparency"] = 1,
 			["Visible"] = true,
 			["Parent"] = search_inside,
-			["Position"] = udim2_new(0, 22, 0, 2),
+			["Position"] = udim2_new(0, 22, 0, 3),
 		})
 		local search_image = drawing_proxy["new"]("Image", {
 			["Color"] = menu["colors"]["inactive_text"],
 			["Data"] = base64_decode(
 				"iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAYAAAAAEAAABgAAAAAQAAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAADp1fY4ytpsegAAAGdJREFUKFONkGEWgCAIg5GTdP9LlqPBA8Pq+yFuOvA5JHFOuDXGhNvAjPVipgtZAFAGtIuvbrSdRA4sJQQBKB/wOM6V9TevAe+cn6su8liwaieSuwuONy4/k0PdZHglsKOEWD+5QyIX+wJP/y1yP3IAAAAASUVORK5CYII="
 			),
-			["Position"] = udim2_new(0, 4, 0, 3),
+			["Position"] = udim2_new(0, 4, 0, 4),
 			["Parent"] = search_inside,
 			["Size"] = udim2_new(0, 12, 0, 12),
 			["Transparency"] = 1,
@@ -6791,21 +6625,13 @@ do
 			tween(list_frame, { Color = menu["colors"]["border"], Transparency = 0.2 }, circular, out, 0.15)
 		end)
 
-		local wm_hud_ref = hud_frames["watermark_position"]
-		create_hover_connection(wm_hud_ref, wm_hud_ref, function()
-			tween(wm_hud_ref, { Color = menu["colors"]["highlighted"], Transparency = 1 }, circular, out, 0.15)
-		end, function()
-			tween(wm_hud_ref, { Color = menu["colors"]["border"], Transparency = 0.7 }, circular, out, 0.15)
-		end)
-
 		menu.set_accent_color = LPH_JIT_MAX(function(color)
 			menu["colors"]["accent"] = color
 
 			tab_line["Color"] = color
 			drag_logo["Color"] = color
-			if wm_line then wm_line["Color"] = color end
-			if wm_name_ref then wm_name_ref["Color"] = color end
-			if wm_info_ref then wm_info_ref["Color"] = color3_fromrgb(255, 255, 255) end
+			watermark_line["Color"] = color
+			watermark_title["Color"] = color
 			for name, group in menu["groups"] do
 				group["text"]["Color"] = color
 				group["line"]["Color"] = color
@@ -7454,15 +7280,6 @@ do
 						list_frame["Position"] = udim2_new(0, keybinds_position[1], 0, keybinds_position[2])
 					end
 
-					local watermark_position = new_flags["watermark_position"]
-
-					if watermark_position then
-						local wm_hud = hud_frames["watermark_position"]
-						if wm_hud then
-							wm_hud["Position"] = udim2_new(0, watermark_position[1], 0, watermark_position[2])
-						end
-					end
-
 					local skins = new_flags["skins"]
 
 					if skins and type(skins) == "table" then
@@ -7622,7 +7439,7 @@ do
 					["name"] = "keybinds list",
 				}, {
 					["toggle"] = {
-						["default"] = true,
+						["default"] = false,
 						["flag"] = "keybind_list",
 					},
 				})["on_toggle_change"],
@@ -7634,15 +7451,6 @@ do
 					end
 				end
 			)
-
-						menu_references["watermark"] = settings_section:create_element({
-				["name"] = "watermark",
-			}, {
-				["toggle"] = {
-					["default"] = true,
-					["flag"]    = "!watermark_visible",
-				},
-			})
 
 			menu_references["notifications"] = settings_section:create_element({
 				["name"] = "notifications",
@@ -7691,40 +7499,16 @@ do
 				},
 			})
 
-			-- > watermark toggle
-
-			create_connection(menu_references["watermark"]["on_toggle_change"], function(bool)
-				if bool then
-					menu["show_watermark"]()
-				else
-					menu["hide_watermark"]()
-				end
-			end)
-
-			-- > watermark custom text
---[[			local wm_text_element = settings_section:create_element({
-				["name"] = "watermark text",
-			}, {
-				["textbox"] = {
-					["flag"]    = "!watermark_custom_text",
-					["default"] = nil,
-				},
-			})]]
-
---[[			create_connection(wm_text_element["on_textbox_change"], function(text)
-				menu["set_watermark_text"](text)
-			end)
-]]
 			create_connection(
 				settings_section:create_element({
-					["name"] = "unload",
+					["name"] = "unload juju",
 				}, {
 					["button"] = {
 						["confirmation"] = true,
 					},
 				})["on_clicked"],
 				function()
-					getgenv()["_APPLE"]()
+					getgenv()["_JUJU"]()
 
 					if identifyexecutor() == "AWP" then
 						cleardrawcache()
@@ -7790,6 +7574,7 @@ do
 				})["on_color_change"],
 				function(color)
 					menu["colors"]["juju"] = color
+					juju_text["Color"] = color
 				end
 			)
 
@@ -7806,6 +7591,7 @@ do
 				})["on_color_change"],
 				function(color)
 					menu["colors"]["logo"] = color
+					logo["Color"] = color
 				end
 			)
 
@@ -7838,6 +7624,7 @@ do
 				})["on_color_change"],
 				function(color)
 					menu["colors"]["build"] = color
+					build_text["Color"] = color
 				end
 			)
 
@@ -8881,7 +8668,7 @@ do
 	-- > ( loading / unloading )
 
 	do
-		local unload = getgenv()["_APPLE"]
+		local unload = getgenv()["_JUJU"]
 
 		if unload then
 			unload()
@@ -8903,8 +8690,8 @@ do
 
 		getrawmetatable = env["getrawmetatable"]
 
-		env["_APPLE"] = function()
-			env["_APPLE"] = nil
+		env["_JUJU"] = function()
+			env["_JUJU"] = nil
 
 			for _, group in menu["groups"] do
 				for _, tab in group["tabs"] do
