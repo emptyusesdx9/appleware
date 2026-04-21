@@ -498,6 +498,7 @@ do
 	)
 	local menu_width = 706
 	local menu_height = 509
+	local topbar_height = 41
 	local sidebar_width = 121
 	local tab_content_padding = 12
 	local min_sidebar_layout_height = menu_height - 45
@@ -778,12 +779,12 @@ do
 
 	do
 		local is_awp    = identifyexecutor() == "AWP"
-		local txt_y     = is_awp and 6 or 7
-		local h_outer   = 26
+		local txt_y     = is_awp and 7 or 8
+		local h_outer   = 31
 		local h_inner   = h_outer - 2
 		local pad_l     = 14    -- space after the accent bar
 		local pad_r     = 10   -- right padding
-		local gap       = 8    -- gap between name and info text
+		local gap       = 7    -- gap between name and info text
 		local bar_w     = 2    -- left accent bar width
 
 		local wm_init_x = flags["watermark_position"][1]
@@ -846,7 +847,7 @@ do
 		local wm_name = drawing_proxy["new"]("Text", {
 			["Color"]        = menu["colors"]["accent"],
 			["Text"]         = "marceline",
-			["Size"]         = 13,
+			["Size"]         = 16,
 			["Font"]         = 1,
 			["Transparency"] = 1,
 			["Visible"]      = true,
@@ -859,7 +860,7 @@ do
 		local wm_info = drawing_proxy["new"]("Text", {
 			["Color"]        = color3_fromrgb(255, 255, 255),
 			["Text"]         = "ver 1.0.7 | 0 fps | 00:00",
-			["Size"]         = 13,
+			["Size"]         = 16,
 			["Font"]         = 1,
 			["Transparency"] = 1,
 			["Visible"]      = true,
@@ -874,7 +875,7 @@ do
 			local name_w = wm_name["TextBounds"]["X"]
 			local info_w = wm_info["TextBounds"]["X"]
 			local info_x = pad_l + name_w + gap
-			local total  = bar_w + info_x + info_w + pad_r
+			local total  = bar_w + info_x + info_w + pad_r + 2
 			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h_outer)
 			wm_inside["Size"] = udim2_new(0, total,     0, h_inner)
 			wm_info["Position"] = udim2_new(0, info_x, 0, txt_y)
@@ -938,8 +939,8 @@ do
 
 	local right_side = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, sidebar_width, 0, 0),
-		["Size"] = udim2_new(1, -sidebar_width, 1, 0),
+		["Position"] = udim2_new(0, sidebar_width, 0, topbar_height),
+		["Size"] = udim2_new(1, -sidebar_width, 1, -topbar_height),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Filled"] = true,
@@ -948,8 +949,8 @@ do
 
 	local right_side_cover = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, sidebar_width, 0, 0),
-		["Size"] = udim2_new(1, -sidebar_width, 1, 0),
+		["Position"] = udim2_new(0, sidebar_width, 0, topbar_height),
+		["Size"] = udim2_new(1, -sidebar_width, 1, -topbar_height),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Filled"] = true,
@@ -959,13 +960,54 @@ do
 
 	local right_side_divider = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, sidebar_width - 1, 0, 0),
-		["Size"] = udim2_new(0, 1, 1, 0),
+		["Position"] = udim2_new(0, sidebar_width - 1, 0, topbar_height),
+		["Size"] = udim2_new(0, 1, 1, -topbar_height),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Thickness"] = 1,
 		["Filled"] = true,
 		["Transparency"] = 1,
+	})
+
+	local top_bar = drawing_proxy["new"]("Square", {
+		["Parent"] = inside,
+		["Position"] = udim2_new(0, 0, 0, 0),
+		["Size"] = udim2_new(1, 0, 0, topbar_height),
+		["Color"] = color3_fromrgb(27, 29, 30),
+		["Filled"] = true,
+		["Transparency"] = 1,
+		["Visible"] = true,
+	})
+
+	local top_title = drawing_proxy["new"]("Text", {
+		["Parent"] = top_bar,
+		["Position"] = udim2_new(0, 16, 0, identifyexecutor() == "AWP" and 11 or 10),
+		["Text"] = getgenv().script_name or "marceline",
+		["Size"] = 16,
+		["Font"] = 1,
+		["Color"] = color3_fromrgb(235, 235, 235),
+		["Transparency"] = 1,
+		["Visible"] = true,
+	})
+
+	local top_close = drawing_proxy["new"]("Text", {
+		["Parent"] = top_bar,
+		["Position"] = udim2_new(1, -28, 0, identifyexecutor() == "AWP" and 11 or 10),
+		["Text"] = "×",
+		["Size"] = 17,
+		["Font"] = 1,
+		["Color"] = color3_fromrgb(220, 220, 220),
+		["Transparency"] = 1,
+		["Visible"] = true,
+	})
+
+	local top_close_hitbox = drawing_proxy["new"]("Square", {
+		["Parent"] = top_bar,
+		["Position"] = udim2_new(1, -40, 0, 5),
+		["Size"] = udim2_new(0, 30, 0, 30),
+		["Filled"] = true,
+		["Transparency"] = 0,
+		["Visible"] = true,
 	})
 
 	local search_image = drawing_proxy["new"]("Image", {
@@ -4173,6 +4215,9 @@ do
 		tween(frame, transparency, exponential, out, 0.18)
 		tween(inside, transparency, exponential, out, 0.18)
 		tween(juju_text, transparency, exponential, out, 0.18)
+		tween(top_bar, transparency, exponential, out, 0.18)
+		tween(top_title, transparency, exponential, out, 0.18)
+		tween(top_close, transparency, exponential, out, 0.18)
 		tween(right_side, transparency, exponential, out, 0.18)
 		tween(right_side_divider, transparency, exponential, out, 0.18)
 		tween(search_image, transparency, exponential, out, 0.18)
@@ -4703,17 +4748,15 @@ do
 		local tab_frame = tab["frame"]
 		local y_position = y_position or 0
 
-		local section_column_gap = 6
-		local section_stack_gap = 12
 		local section_border = drawing_proxy["new"]("Image", {
 			["Parent"] = tab_frame,
 			["Position"] = udim2_new(
 				side == 1 and 0 or 0.5,
-				side == 1 and 0 or section_column_gap,
+				side == 1 and 0 or 5,
 				y_position,
-				y_position ~= 0 and section_stack_gap or 0
+				y_position ~= 0 and 10 or 0
 			),
-			["Size"] = udim2_new(0.5, -section_column_gap, size, y_position ~= 0 and -section_stack_gap or 0),
+			["Size"] = udim2_new(0.5, -5, size, y_position ~= 0 and -10 or 0),
 			["Color"] = menu["colors"]["border"],
 			["Transparency"] = 1,
 			["Rounding"] = 4,
@@ -4808,11 +4851,10 @@ do
 
 		local tab_frame = tab["frame"]
 
-		local panel_column_gap = 6
 		local section_border = drawing_proxy["new"]("Image", {
 			["Parent"] = tab_frame,
-			["Position"] = udim2_new(side == 1 and 0 or 0.5, side == 1 and 0 or panel_column_gap, 0, 0),
-			["Size"] = udim2_new(0.5, -panel_column_gap, 1, 0),
+			["Position"] = udim2_new(side == 1 and 0 or 0.5, side == 1 and 0 or 5, 0, 0),
+			["Size"] = udim2_new(0.5, -5, 1, 0),
 			["Color"] = menu["colors"]["border"],
 			["Transparency"] = 1,
 			["Rounding"] = 4,
@@ -8595,6 +8637,18 @@ do
 		end)
 
 		create_click_connection(frame, search_image, start_search)
+
+		create_click_connection(frame, top_close_hitbox, function()
+			if menu_open then
+				pop_menu()
+			end
+		end)
+
+		create_hover_connection(frame, top_close_hitbox, function()
+			tween(top_close, { Color = menu["colors"]["accent"] }, circular, out, 0.12)
+		end, function()
+			tween(top_close, { Color = color3_fromrgb(220, 220, 220) }, circular, out, 0.12)
+		end)
 
 		-- >> ( configs )
 
