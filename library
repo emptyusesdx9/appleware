@@ -306,7 +306,7 @@ local menu = {
 	groups = {},
 	favorites = {},
 	autoload = nil,
-	initial_base_offset = 75,
+	initial_base_offset = 78,
 	ordered_groups = {},
 	theme = "",
 }
@@ -496,8 +496,13 @@ do
 	local cog_image_data = base64_decode(
 		"iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf///wAAAFXC034AAAACdFJOU/8A5bcwSgAAAAlwSFlzAAAQKAAAECgBJz8A6wAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIDUuMS4y+7wDtgAAALZlWElmSUkqAAgAAAAFABoBBQABAAAASgAAABsBBQABAAAAUgAAACgBAwABAAAAAgAAADEBAgAQAAAAWgAAAGmHBAABAAAAagAAAAAAAAB3mgEA6AMAAHeaAQDoAwAAUGFpbnQuTkVUIDUuMS4yAAMAAJAHAAQAAAAwMjMwAaADAAEAAAABAAAABaAEAAEAAACUAAAAAAAAAAIAAQACAAQAAABSOTgAAgAHAAQAAAAwMTAwAAAAAEyPNqYn0aVIAAAALElEQVQYV2NgBAIGCAmioQhIQACQCZaGYBAJoZGYSApgUhATYAiikJGRkREACr4AMZ+SUSoAAAAASUVORK5CYII="
 	)
+	local menu_width = 706
+	local menu_height = 509
+	local sidebar_width = 121
+	local tab_content_padding = 12
+	local min_sidebar_layout_height = menu_height - 45
 	local menu_position =
-		udim2_new(0, camera["ViewportSize"]["X"] / 2 - 575 / 2, 0, camera["ViewportSize"]["Y"] / 2 - 450 * 0.5)
+		udim2_new(0, camera["ViewportSize"]["X"] / 2 - menu_width / 2, 0, camera["ViewportSize"]["Y"] / 2 - menu_height * 0.5)
 
 	local half_transparency = { Transparency = 0.5 }
 	local stop_panel_search = nil
@@ -511,6 +516,9 @@ do
 	local old_text = ""
 	local searching = nil
 	local hud_frames = {}
+	local wm_line = nil
+	local wm_name_ref = nil
+	local wm_info_ref = nil
 
 	local actives = {
 		["colorpicker"] = nil,
@@ -735,7 +743,7 @@ do
 
 	local frame = drawing_proxy["new"]("Image", {
 		["Position"] = menu_position,
-		["Size"] = udim2_new(0, 575, 0, 450),
+		["Size"] = udim2_new(0, menu_width, 0, menu_height),
 		["Color"] = menu["colors"]["background"],
 		["Rounding"] = 4,
 		["Data"] = pixel_image_data,
@@ -769,12 +777,14 @@ do
 	-- > ( watermark )
 
 	do
-		local is_awp  = identifyexecutor() == "AWP"
-		local h       = 26        -- total height
-		local bar_w   = 2         -- left accent bar width
-		local pad_l   = 10        -- text left padding (after bar)
-		local pad_r   = 10        -- text right padding
-		local txt_y   = is_awp and 6 or 7
+		local is_awp    = identifyexecutor() == "AWP"
+		local txt_y     = is_awp and 6 or 7
+		local h_outer   = 26
+		local h_inner   = h_outer - 2
+		local pad_l     = 14    -- space after the accent bar
+		local pad_r     = 10   -- right padding
+		local gap       = 8    -- gap between name and info text
+		local bar_w     = 2    -- left accent bar width
 
 		local wm_init_x = flags["watermark_position"][1]
 		local wm_init_y = flags["watermark_position"][2]
@@ -782,7 +792,7 @@ do
 		-- outer border frame
 		local wm_frame = drawing_proxy["new"]("Image", {
 			["Position"]     = udim2_new(0, wm_init_x, 0, wm_init_y),
-			["Size"]         = udim2_new(0, 10, 0, h),
+			["Size"]         = udim2_new(0, 10, 0, h_outer),
 			["Color"]        = color3_fromrgb(38, 38, 38),
 			["Transparency"] = 0,
 			["Rounding"]     = 3,
@@ -806,10 +816,10 @@ do
 			["Position"]     = udim2_new(0, -4, 0, -3),
 		})
 
-		-- dark inner fill (1px inset on all sides except left -- bar sits flush)
+		-- dark inner fill
 		local wm_inside = drawing_proxy["new"]("Image", {
 			["Position"]     = udim2_new(0, 1, 0, 1),
-			["Size"]         = udim2_new(0, 8, 0, h - 2),
+			["Size"]         = udim2_new(0, 10, 0, h_inner),
 			["Color"]        = color3_fromrgb(16, 16, 16),
 			["Transparency"] = 1,
 			["Rounding"]     = 3,
@@ -819,21 +829,20 @@ do
 			["Visible"]      = true,
 		})
 
-		-- left accent bar: parented to wm_frame, full height, sits at x=0
-		-- (parented to frame not inside so it covers the full rounded edge)
-		local wm_bar = drawing_proxy["new"]("Image", {
-			["Parent"]       = wm_frame,
+		-- left accent bar (covers full inner height)
+		local wm_bar = drawing_proxy["new"]("Square", {
+			["Parent"]       = wm_inside,
 			["Position"]     = udim2_new(0, 0, 0, 0),
-			["Size"]         = udim2_new(0, bar_w, 0, h),
+			["Size"]         = udim2_new(0, bar_w, 1, 0),
 			["Color"]        = menu["colors"]["accent"],
+			["Filled"]       = true,
 			["Transparency"] = 0,
-			["Rounding"]     = 3,
-			["Data"]         = pixel_image_data,
-			["ZIndex"]       = 13,
+			["ZIndex"]       = 12,
 			["Visible"]      = true,
 		})
+		wm_line = wm_bar
 
-		-- "marceline" text in accent color
+		-- "marceline" in accent color
 		local wm_name = drawing_proxy["new"]("Text", {
 			["Color"]        = menu["colors"]["accent"],
 			["Text"]         = "marceline",
@@ -842,38 +851,73 @@ do
 			["Transparency"] = 1,
 			["Visible"]      = true,
 			["Parent"]       = wm_inside,
-			["Position"]     = udim2_new(0, bar_w + pad_l, 0, txt_y),
-			["ZIndex"]       = 14,
+			["Position"]     = udim2_new(0, pad_l, 0, txt_y),
+			["ZIndex"]       = 12,
 		})
+		wm_name_ref = wm_name
 
-		-- resize: defer ONE frame so TextBounds is populated by the renderer
+		local wm_info = drawing_proxy["new"]("Text", {
+			["Color"]        = color3_fromrgb(255, 255, 255),
+			["Text"]         = "ver 1.0.7 | 0 fps | 00:00",
+			["Size"]         = 13,
+			["Font"]         = 1,
+			["Transparency"] = 1,
+			["Visible"]      = true,
+			["Parent"]       = wm_inside,
+			["Position"]     = udim2_new(0, pad_l + 60, 0, txt_y),
+			["ZIndex"]       = 12,
+		})
+		wm_info_ref = wm_info
+
+		-- auto-resize: total width = bar + padL + nameW + gap + infoW + padR
 		local function refresh_wm_size()
 			local name_w = wm_name["TextBounds"]["X"]
-			if name_w == 0 then return end   -- not rendered yet, skip
-			local total = bar_w + pad_l + name_w + pad_r
-			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h)
-			wm_inside["Size"] = udim2_new(0, total - bar_w, 0, h - 2)
-			wm_bar["Size"]    = udim2_new(0, bar_w, 0, h)
+			local info_w = wm_info["TextBounds"]["X"]
+			local info_x = pad_l + name_w + gap
+			local total  = bar_w + info_x + info_w + pad_r
+			wm_frame["Size"]  = udim2_new(0, total + 2, 0, h_outer)
+			wm_inside["Size"] = udim2_new(0, total,     0, h_inner)
+			wm_info["Position"] = udim2_new(0, info_x, 0, txt_y)
 			local sw = floor((total + 2) / 11)
 			wm_shadow["Size"]     = udim2_new(1, sw, 1, 6)
 			wm_shadow["Position"] = udim2_new(0, -sw / 2, 0, -3)
 		end
 
-		-- defer so the renderer has had one frame to calculate TextBounds
-		spawn(function()
-			task.wait()
-			refresh_wm_size()
-		end)
+		refresh_wm_size()
 
+		local wm_custom_text = nil
+		local wm_tick_accum = 0
+		local wm_version = tostring(getgenv().script_version or "1.0.7")
+
+		heartbeat[#heartbeat + 1] = function(dt)
+			wm_tick_accum = wm_tick_accum + dt
+			if wm_tick_accum < 0.25 then
+				return
+			end
+
+			wm_tick_accum = 0
+			local fps = floor(1 / clamp(dt, 1 / 1000, 1))
+			local now = os.date("%H:%M")
+			wm_info["Text"] = ("ver %s | %d fps | %s"):format(wm_version, fps, now)
+			refresh_wm_size()
+		end
+
+		-- public api
 		menu["refresh_watermark_size"] = refresh_wm_size
+		menu["set_watermark_text"] = function(text)
+			local cleaned = (text and tostring(text):gsub("^%s+", ""):gsub("%s+$", "")) or ""
+			wm_custom_text = cleaned ~= "" and cleaned or nil
+			wm_name["Text"] = wm_custom_text or (getgenv().script_name or "marceline")
+			refresh_wm_size()
+		end
 
 		menu["show_watermark"] = function()
 			wm_frame["Visible"] = true
 			tween(wm_frame,  { Transparency = 0.7  }, circular, out, 0.15)
 			tween(wm_inside, show_transparency,       circular, out, 0.15)
 			tween(wm_shadow, { Transparency = 0.16 }, circular, out, 0.15)
-			tween(wm_bar,    show_transparency,       circular, out, 0.15)
 			tween(wm_name,   show_transparency,       circular, out, 0.15)
+			tween(wm_info,   show_transparency,       circular, out, 0.15)
 			flags["!watermark_visible"] = true
 		end
 
@@ -881,8 +925,8 @@ do
 			tween(wm_frame,  hide_transparency, circular, out, 0.15)
 			tween(wm_inside, hide_transparency, circular, out, 0.15)
 			tween(wm_shadow, hide_transparency, circular, out, 0.15)
-			tween(wm_bar,    hide_transparency, circular, out, 0.15)
 			tween(wm_name,   hide_transparency, circular, out, 0.15)
+			tween(wm_info,   hide_transparency, circular, out, 0.15)
 			flags["!watermark_visible"] = false
 			delay(0.15, function()
 				if not flags["!watermark_visible"] then
@@ -890,20 +934,12 @@ do
 				end
 			end)
 		end
-
-		-- accent color hook
-		local _orig_set_accent = menu.set_accent_color
-		menu.set_accent_color = function(color)
-			if _orig_set_accent then _orig_set_accent(color) end
-			wm_bar["Color"]  = color
-			wm_name["Color"] = color
-		end
 	end
 
 	local right_side = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, 101, 0, 0),
-		["Size"] = udim2_new(1, -101, 1, 0),
+		["Position"] = udim2_new(0, sidebar_width, 0, 0),
+		["Size"] = udim2_new(1, -sidebar_width, 1, 0),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Filled"] = true,
@@ -912,8 +948,8 @@ do
 
 	local right_side_cover = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, 101, 0, 0),
-		["Size"] = udim2_new(1, -101, 1, 0),
+		["Position"] = udim2_new(0, sidebar_width, 0, 0),
+		["Size"] = udim2_new(1, -sidebar_width, 1, 0),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
 		["Filled"] = true,
@@ -923,7 +959,7 @@ do
 
 	local right_side_divider = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, 100, 0, 0),
+		["Position"] = udim2_new(0, sidebar_width - 1, 0, 0),
 		["Size"] = udim2_new(0, 1, 1, 0),
 		["Color"] = menu["colors"]["background"],
 		["Visible"] = true,
@@ -1039,7 +1075,7 @@ do
 
 	local drag_frame = drawing_proxy["new"]("Image", {
 		["Position"] = menu_position,
-		["Size"] = udim2_new(0, 575, 0, 450),
+		["Size"] = udim2_new(0, menu_width, 0, menu_height),
 		["Color"] = menu["colors"]["background"],
 		["Rounding"] = 4,
 		["Data"] = pixel_image_data,
@@ -4290,7 +4326,13 @@ do
 		tween(right_side_cover, show_transparency, circular, out, 0.15)
 
 		if actives["old_tab"] then
-			tween(actives["old_tab"]["frame"], { ["tween_position"] = udim2_new(0, 10, 0, 20) }, circular, out, 0.15)
+			tween(
+				actives["old_tab"]["frame"],
+				{ ["tween_position"] = udim2_new(0, tab_content_padding, 0, tab_content_padding + 10) },
+				circular,
+				out,
+				0.15
+			)
 			tween(
 				actives["old_tab"]["text"],
 				{ ["Color"] = menu["colors"]["inactive_text"], ["tween_position"] = actives["old_tab"]["position"] },
@@ -4331,8 +4373,14 @@ do
 
 				local new_frame = tab["frame"]
 				new_frame["Visible"] = true
-				new_frame["Position"] = udim2_new(0, 10, 0, 20)
-				tween(new_frame, { ["tween_position"] = udim2_new(0, 10, 0, 10) }, circular, out, 0.15)
+				new_frame["Position"] = udim2_new(0, tab_content_padding, 0, tab_content_padding + 10)
+				tween(
+					new_frame,
+					{ ["tween_position"] = udim2_new(0, tab_content_padding, 0, tab_content_padding) },
+					circular,
+					out,
+					0.15
+				)
 			elseif actives["old_tab"] and actives["tab"] ~= actives["old_tab"] then
 				actives["old_tab"]["frame"]["Visible"] = false
 			end
@@ -4340,8 +4388,8 @@ do
 		actives["tab"] = tab
 	end
 
-	local group_header_height = 30
-	local tab_vertical_step = 15
+	local group_header_height = 34
+	local tab_vertical_step = 18
 
 	function menu.update_layout()
 		local current_y_offset = menu["initial_base_offset"]
@@ -4391,11 +4439,11 @@ do
 					local tab_text = tab["text"]
 					local tab_text_frame = tab["text_frame"]
 					local new_tab_y = base_tab_y + (tab_index - 1) * tab_vertical_step
-					local new_tab_position = udim2_new(0, 15, 0, new_tab_y)
+					local new_tab_position = udim2_new(0, 16, 0, new_tab_y)
 
 					tab["position"] = new_tab_position
 					if tab_text then
-						tab_text["Position"] = actives["tab"] == tab and udim2_new(0, 20, 0, new_tab_y)
+						tab_text["Position"] = actives["tab"] == tab and udim2_new(0, 22, 0, new_tab_y)
 							or new_tab_position
 					end
 					if tab_text_frame then
@@ -4409,8 +4457,8 @@ do
 			end
 		end
 
-		local size = current_y_offset > 405 and udim2_new(0, 575, 0, 450 + (current_y_offset - 405))
-			or udim2_new(0, 575, 0, 450)
+		local size = current_y_offset > min_sidebar_layout_height and udim2_new(0, menu_width, 0, menu_height + (current_y_offset - min_sidebar_layout_height))
+			or udim2_new(0, menu_width, 0, menu_height)
 		drag_frame["Size"] = size
 		frame["Size"] = size
 	end
@@ -4482,7 +4530,7 @@ do
 		local group_initial_offset = self["initial_offset"]
 		local ordered_tabs = self["ordered_tabs"]
 		local index = #ordered_tabs + 1
-		local position = udim2_new(0, 15, 0, group_initial_offset + 20 + (index - 1) * tab_vertical_step)
+		local position = udim2_new(0, 16, 0, group_initial_offset + 20 + (index - 1) * tab_vertical_step)
 		local is_group_visible = self["is_visible"]
 
 		local new_tab = {
@@ -4497,8 +4545,8 @@ do
 			}),
 			["frame"] = drawing_proxy["new"]("Square", {
 				["Parent"] = right_side,
-				["Position"] = udim2_new(0, 10, 0, 10),
-				["Size"] = udim2_new(1, -20, 1, -20),
+				["Position"] = udim2_new(0, tab_content_padding, 0, tab_content_padding),
+				["Size"] = udim2_new(1, -(tab_content_padding * 2), 1, -(tab_content_padding * 2)),
 				["Filled"] = true,
 				["Transparency"] = 0,
 				["Visible"] = false,
@@ -4655,15 +4703,17 @@ do
 		local tab_frame = tab["frame"]
 		local y_position = y_position or 0
 
+		local section_column_gap = 6
+		local section_stack_gap = 12
 		local section_border = drawing_proxy["new"]("Image", {
 			["Parent"] = tab_frame,
 			["Position"] = udim2_new(
 				side == 1 and 0 or 0.5,
-				side == 1 and 0 or 5,
+				side == 1 and 0 or section_column_gap,
 				y_position,
-				y_position ~= 0 and 10 or 0
+				y_position ~= 0 and section_stack_gap or 0
 			),
-			["Size"] = udim2_new(0.5, -5, size, y_position ~= 0 and -10 or 0),
+			["Size"] = udim2_new(0.5, -section_column_gap, size, y_position ~= 0 and -section_stack_gap or 0),
 			["Color"] = menu["colors"]["border"],
 			["Transparency"] = 1,
 			["Rounding"] = 4,
@@ -4758,10 +4808,11 @@ do
 
 		local tab_frame = tab["frame"]
 
+		local panel_column_gap = 6
 		local section_border = drawing_proxy["new"]("Image", {
 			["Parent"] = tab_frame,
-			["Position"] = udim2_new(side == 1 and 0 or 0.5, side == 1 and 0 or 5, 0, 0),
-			["Size"] = udim2_new(0.5, -5, 1, 0),
+			["Position"] = udim2_new(side == 1 and 0 or 0.5, side == 1 and 0 or panel_column_gap, 0, 0),
+			["Size"] = udim2_new(0.5, -panel_column_gap, 1, 0),
 			["Color"] = menu["colors"]["border"],
 			["Transparency"] = 1,
 			["Rounding"] = 4,
@@ -6703,6 +6754,8 @@ do
 			tab_line["Color"] = color
 			drag_logo["Color"] = color
 			if wm_line then wm_line["Color"] = color end
+			if wm_name_ref then wm_name_ref["Color"] = color end
+			if wm_info_ref then wm_info_ref["Color"] = color3_fromrgb(255, 255, 255) end
 			for name, group in menu["groups"] do
 				group["text"]["Color"] = color
 				group["line"]["Color"] = color
