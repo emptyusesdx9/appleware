@@ -305,7 +305,7 @@ local menu = {
 	groups = {},
 	favorites = {},
 	autoload = nil,
-	initial_base_offset = 75,
+	initial_base_offset = 80,
 	ordered_groups = {},
 	theme = "",
 }
@@ -843,6 +843,16 @@ do
 		["Transparency"] = 1,
 	})
 
+	local sidebar_bg = drawing_proxy["new"]("Square", {
+		["Parent"] = inside,
+		["Position"] = udim2_new(0, 0, 0, 0),
+		["Size"] = udim2_new(0, 196, 1, 0),
+		["Color"] = color3_fromrgb(8, 8, 10),
+		["Visible"] = true,
+		["Filled"] = true,
+		["Transparency"] = 1,
+	})
+
 	local right_side_cover = drawing_proxy["new"]("Square", {
 		["Parent"] = inside,
 		["Position"] = udim2_new(0, 196, 0, 0),
@@ -869,7 +879,7 @@ do
 	local bottom_bar = drawing_proxy["new"]("Image", {
 		["Parent"] = inside,
 		["Position"] = udim2_new(0, 0, 1, -36),
-		["Size"] = udim2_new(1, 0, 0, 29),
+		["Size"] = udim2_new(1, 0, 0, 35),
 		["Color"] = color3_fromrgb(23, 23, 25),
 		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
@@ -896,11 +906,33 @@ do
 	})
 	local bottom_game_text = drawing_proxy["new"]("Text", {
 		["Parent"] = inside,
-		["Text"] = getgenv().game_name or ("Script for " .. (pcall(function() return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name end) and game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name or game.Name)),
+		["Text"] = getgenv().game_name or (game and game.Name and game.Name ~= "" and game.Name or "Unknown Game"),
 		["Color"] = color3_fromrgb(72, 72, 73),
 		["Font"] = 1,
 		["Size"] = 12,
-		["Position"] = udim2_new(0, 10, 1, -27),
+		["Position"] = udim2_new(0, 200, 1, -27),
+		["Transparency"] = 1,
+		["Visible"] = true,
+		["ZIndex"] = 2,
+	})
+	local bottom_username_text = drawing_proxy["new"]("Text", {
+		["Parent"] = inside,
+		["Text"] = (game and game:GetService and pcall(function() return game:GetService("Players").LocalPlayer.Name end) and "_" .. game:GetService("Players").LocalPlayer.Name) or "_user",
+		["Color"] = color3_fromrgb(197, 197, 197),
+		["Font"] = 1,
+		["Size"] = 12,
+		["Position"] = udim2_new(0, 28, 1, -27),
+		["Transparency"] = 1,
+		["Visible"] = true,
+		["ZIndex"] = 2,
+	})
+	local bottom_version_text = drawing_proxy["new"]("Text", {
+		["Parent"] = inside,
+		["Text"] = getgenv().script_version or "1.0.0",
+		["Color"] = color3_fromrgb(72, 72, 73),
+		["Font"] = 1,
+		["Size"] = 12,
+		["Position"] = udim2_new(0, 140, 1, -27),
 		["Transparency"] = 1,
 		["Visible"] = true,
 		["ZIndex"] = 2,
@@ -943,13 +975,15 @@ do
 		["Visible"] = true,
 	})
 
-	local tab_line = drawing_proxy["new"]("Square", {
+	local tab_line = drawing_proxy["new"]("Image", {
 		["Parent"] = inside,
-		["Position"] = udim2_new(0, 0, 0, 0),
-		["Size"] = udim2_new(0, 1, 0, 12),
+		["Position"] = udim2_new(0, 7, 0, 0),
+		["Size"] = udim2_new(0, 178, 0, 16),
 		["Filled"] = true,
-		["Transparency"] = 0.5,
+		["Transparency"] = 0,
 		["Color"] = menu["colors"]["accent"],
+		["Rounding"] = 5,
+		["Data"] = pixel_image_data,
 		["Visible"] = true,
 	})
 
@@ -1013,7 +1047,7 @@ do
 
 	local drag_frame = drawing_proxy["new"]("Image", {
 		["Position"] = menu_position,
-		["Size"] = udim2_new(0, 620, 0, 470),
+		["Size"] = udim2_new(0, 700, 0, 565),
 		["Color"] = menu["colors"]["background"],
 		["Rounding"] = 7,
 		["Data"] = pixel_image_data,
@@ -1881,7 +1915,7 @@ do
 
 		tween(
 			search_image,
-			{ tween_position = udim2_new(0, 27, 1, -27), Color = menu["colors"]["image"] },
+			{ tween_position = udim2_new(1, -65, 1, -24), Color = menu["colors"]["image"] },
 			circular,
 			out,
 			0.15
@@ -2164,7 +2198,7 @@ do
 			end
 
 			search_out_border["Size"] = udim2_new(0, max_textbounds + 8, 0, size)
-			search_out_border["Position"] = udim2_new(0, 11, 1, -42 - size)
+			search_out_border["Position"] = udim2_new(1, -155, 1, -60 - size)
 			search_out["Size"] = udim2_new(1, -2, 1, -2)
 
 			local children = search_out["children"]
@@ -2180,7 +2214,7 @@ do
 	local start_search = function()
 		tween(
 			search_image,
-			{ tween_position = udim2_new(0, 14, 1, -27), Color = menu["colors"]["highlighted"] },
+			{ tween_position = udim2_new(1, -80, 1, -24), Color = menu["colors"]["highlighted"] },
 			circular,
 			out,
 			0.15
@@ -4114,12 +4148,19 @@ do
 		tween(juju_text, transparency, exponential, out, 0.18)
 		tween(build_text, transparency, exponential, out, 0.18)
 		tween(right_side, transparency, exponential, out, 0.18)
+		tween(sidebar_bg, transparency, exponential, out, 0.18)
 		tween(right_side_divider, transparency, exponential, out, 0.18)
 		tween(search_image, transparency, exponential, out, 0.18)
 		tween(themes_image, transparency, exponential, out, 0.18)
+		tween(bottom_bar, transparency, exponential, out, 0.18)
+		tween(bottom_bar_fill, transparency, exponential, out, 0.18)
+		tween(bottom_bar_divider, transparency, exponential, out, 0.18)
+		tween(bottom_game_text, transparency, exponential, out, 0.18)
+		tween(bottom_username_text, transparency, exponential, out, 0.18)
+		tween(bottom_version_text, transparency, exponential, out, 0.18)
 
 		tween(settings_image, transparency, exponential, out, 0.18)
-		tween(tab_line, half_transparency, exponential, out, 0.18)
+		tween(tab_line, transparency, exponential, out, 0.18)
 		tween(search_border, transparency, exponential, out, 0.18)
 		tween(search_inside, transparency, exponential, out, 0.18)
 		tween(search_text, transparency, exponential, out, 0.18)
@@ -4278,22 +4319,16 @@ do
 
 		local tab_position = tab["position"]
 
-		if last_group == tab["group"] then
-			tween(
-				tab_line,
-				{ ["tween_position"] = udim2_new(0, tab_position["X"]["Offset"], 0, tab_position["Y"]["Offset"] + 1) },
-				circular,
-				out,
-				0.15
-			)
-		else
-			tab_line["Transparency"] = 0
-			tab_line["Position"] = udim2_new(0, tab_position["X"]["Offset"], 0, tab_position["Y"]["Offset"] + 1)
-			tween(tab_line, half_transparency, circular, out, 0.2)
-		end
+		tween(
+			tab_line,
+			{ ["tween_position"] = udim2_new(0, 7, 0, tab_position["Y"]["Offset"] - 2) },
+			circular,
+			out,
+			0.15
+		)
 
 		tween(tab["text"], {
-			["Color"] = menu["colors"]["active_text"],
+			["Color"] = menu["colors"]["background"],
 			["tween_position"] = udim2_new(0, tab_position["X"]["Offset"] + 5, 0, tab_position["Y"]["Offset"]),
 		}, circular, out, 0.15)
 
@@ -4385,8 +4420,8 @@ do
 			end
 		end
 
-		local size = current_y_offset > 425 and udim2_new(0, 620, 0, 470 + (current_y_offset - 425))
-			or udim2_new(0, 620, 0, 470)
+		local size = current_y_offset > 520 and udim2_new(0, 700, 0, 565 + (current_y_offset - 520))
+			or udim2_new(0, 700, 0, 565)
 		drag_frame["Size"] = size
 		frame["Size"] = size
 	end
@@ -6671,6 +6706,7 @@ do
 
 			tab_line["Color"] = color
 			drag_logo["Color"] = color
+			juju_text["Color"] = color
 			watermark_line["Color"] = color
 			watermark_title["Color"] = color3_fromrgb(255, 255, 255)
 			for name, group in menu["groups"] do
